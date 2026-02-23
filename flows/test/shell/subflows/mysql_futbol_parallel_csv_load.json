@@ -1,9 +1,11 @@
 {
   "id": "subflows.mysql_futbol_parallel_csv.load_csv",
+  "name": "subflows mysql futbol parallel csv load csv",
   "description": "Create the CSV file and load football players into MySQL.",
   "tasks": [
     {
       "id": "shell.csv.create",
+      "name": "shell csv create",
       "description": "Create CSV file in host filesystem for LOAD_CSV operation",
       "action": "SHELL",
       "command": [
@@ -25,6 +27,7 @@
     },
     {
       "id": "load_players_from_csv_mysql",
+      "name": "load players from csv mysql",
       "description": "Load football players from CSV using native LOAD_CSV operation",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",

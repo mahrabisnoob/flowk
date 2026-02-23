@@ -6,11 +6,16 @@
   "additionalProperties": false,
   "required": [
     "id",
+    "name",
     "description",
     "tasks"
   ],
   "properties": {
     "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
       "type": "string",
       "minLength": 1
     },
@@ -53,12 +58,18 @@
       "additionalProperties": false,
       "required": [
         "id",
+        "name",
         "action"
       ],
       "properties": {
         "id": {
           "type": "string",
           "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short non-unique name to identify the task."
         },
         "description": {
           "type": "string",

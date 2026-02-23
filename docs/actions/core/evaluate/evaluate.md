@@ -7,6 +7,7 @@ The **EVALUATE** action inspects the outcome of a previously executed task or va
 ```json
 {
   "id": "check_response",
+  "name": "check_response",
   "action": "EVALUATE",
   "if_conditions": [
     {

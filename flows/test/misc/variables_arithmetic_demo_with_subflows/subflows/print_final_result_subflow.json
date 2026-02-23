@@ -1,9 +1,11 @@
 {
   "id": "subflows.print_final_result_subflow",
+  "name": "subflows print final result subflow",
   "description": "Prints the final result",
   "tasks": [
     {
       "id": "print.final_result",
+      "name": "print final result",
       "description": "Displays the details of each operation and the final counter value",
       "action": "PRINT",
       "entries": [

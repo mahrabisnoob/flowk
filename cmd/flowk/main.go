@@ -47,6 +47,7 @@ type runArguments struct {
 	serveUI       bool
 	uiAddress     string
 	uiDir         string
+	configPath    string
 }
 
 func main() {
@@ -260,6 +261,7 @@ func parseRunArgs(args []string) (runArguments, error) {
 	}
 	cfg.uiAddress = fmt.Sprintf("%s:%d", configResult.Config.UI.Host, configResult.Config.UI.Port)
 	cfg.uiDir = configResult.Config.UI.Dir
+	cfg.configPath = configResult.Path
 
 	return cfg, nil
 }
@@ -332,6 +334,7 @@ func runFlowWithOptions(ctx context.Context, args runArguments) (err error) {
 		StaticDir:     staticDir,
 		Runner:        flowRunner,
 		FlowUploadDir: "",
+		ConfigPath:    args.configPath,
 	})
 	if err != nil {
 		return err

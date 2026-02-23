@@ -146,6 +146,7 @@ const resetRuntimeState = (task: TaskDefinition): TaskDefinition => {
 
 const resetFlowRuntime = (flow: FlowDefinition): FlowDefinition => ({
   ...flow,
+  name: flow.name ?? flow.id,
   tasks: flow.tasks.map(resetRuntimeState)
 });
 
@@ -165,11 +166,20 @@ const sanitizeTaskForUpload = (task: TaskDefinition): Record<string, unknown> =>
     sanitized[key] = value;
   });
 
+  if (sanitized.name === undefined) {
+    if (typeof task.name === 'string' && task.name.trim()) {
+      sanitized.name = task.name;
+    } else if (typeof task.id === 'string' && task.id.trim()) {
+      sanitized.name = task.id;
+    }
+  }
+
   return sanitized;
 };
 
 const sanitizeFlowForUpload = (flow: FlowDefinition): FlowDefinition => ({
   id: flow.id,
+  name: flow.name ?? flow.id,
   description: flow.description,
   imports: flow.imports ?? [],
   tasks: flow.tasks
@@ -304,7 +314,25 @@ const matchFlowIdForImport = (path: string, candidates: Set<string>): string | u
   return undefined;
 };
 
-const buildImportNodes = (flow: FlowDefinition | undefined): FlowImport[] => {
+const buildFlowNameLookup = (flows: FlowDefinition[]): Map<string, string> => {
+  const map = new Map<string, string>();
+  flows.forEach((flow) => {
+    map.set(flow.id, flow.name ?? flow.id);
+    if (flow.flowNames) {
+      Object.entries(flow.flowNames).forEach(([id, name]) => {
+        if (!map.has(id)) {
+          map.set(id, name);
+        }
+      });
+    }
+  });
+  return map;
+};
+
+const buildImportNodes = (
+  flow: FlowDefinition | undefined,
+  flowNameById: Map<string, string>
+): FlowImport[] => {
   if (!flow) {
     return [];
   }
@@ -321,10 +349,11 @@ const buildImportNodes = (flow: FlowDefinition | undefined): FlowImport[] => {
     if (!firstTaskId) {
       return;
     }
+    const resolvedLabel = label ?? flowNameById.get(flowId) ?? flowId;
     imports.push({
       id: flowId,
-      name: label ?? flowId,
-      path: path ?? label ?? flowId,
+      name: resolvedLabel,
+      path: path ?? resolvedLabel,
       flowId,
       firstTaskId
     });
@@ -337,7 +366,8 @@ const buildImportNodes = (flow: FlowDefinition | undefined): FlowImport[] => {
     const displayName = normalizedPath.split('/').pop()?.replace(/\.json$/i, '') ?? normalizedPath;
     const flowId = matchFlowIdForImport(normalizedPath, knownFlows);
     if (flowId) {
-      assignFlow(flowId, displayName, normalizedPath);
+      const resolvedLabel = flowNameById.get(flowId) ?? displayName;
+      assignFlow(flowId, resolvedLabel, normalizedPath);
       matchedFlows.add(flowId);
     } else {
       imports.push({
@@ -550,7 +580,13 @@ const useFlowStore = create<FlowState>((set, get) => ({
     }
     const flow = get().flows.find((item) => item.id === id);
     if (flow) {
-      set({ activeFlow: flow, importsTree: buildImportNodes(flow), focusTaskId: undefined, stopAtTaskId: undefined });
+      const flowNameById = buildFlowNameLookup(get().flows);
+      set({
+        activeFlow: flow,
+        importsTree: buildImportNodes(flow, flowNameById),
+        focusTaskId: undefined,
+        stopAtTaskId: undefined
+      });
       void requestStopAtTask('');
     }
   },
@@ -564,14 +600,18 @@ const useFlowStore = create<FlowState>((set, get) => ({
 
     const resetFlow = resetFlowRuntime(flow);
     const sourceFileName = flow.sourceFileName;
-    set((state) => ({
-      activeFlow: resetFlow,
-      flows: state.flows.map((item) => (item.id === resetFlow.id ? resetFlow : item)),
-      importsTree: buildImportNodes(resetFlow),
-      focusTaskId: undefined,
-      stopAtTaskId: undefined,
-      loadError: null
-    }));
+    set((state) => {
+      const updatedFlows = state.flows.map((item) => (item.id === resetFlow.id ? resetFlow : item));
+      const flowNameById = buildFlowNameLookup(updatedFlows);
+      return {
+        activeFlow: resetFlow,
+        flows: updatedFlows,
+        importsTree: buildImportNodes(resetFlow, flowNameById),
+        focusTaskId: undefined,
+        stopAtTaskId: undefined,
+        loadError: null
+      };
+    });
     void requestStopAtTask('');
 
     try {
@@ -580,11 +620,15 @@ const useFlowStore = create<FlowState>((set, get) => ({
       const normalized = resetFlowRuntime(uploaded);
       const isPersisted = get().importedFlowIds.includes(uploaded.id);
 
-      set((state) => ({
-        activeFlow: normalized,
-        flows: state.flows.map((item) => (item.id === normalized.id ? normalized : item)),
-        importsTree: buildImportNodes(normalized)
-      }));
+      set((state) => {
+        const updatedFlows = state.flows.map((item) => (item.id === normalized.id ? normalized : item));
+        const flowNameById = buildFlowNameLookup(updatedFlows);
+        return {
+          activeFlow: normalized,
+          flows: updatedFlows,
+          importsTree: buildImportNodes(normalized, flowNameById)
+        };
+      });
 
       if (isPersisted) {
         const persistedFlows = readPersistedFlows();

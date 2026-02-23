@@ -1,9 +1,11 @@
 {
   "id": "local_batch_simulation_fixed",
+  "name": "local batch simulation fixed",
   "description": "Simulates processing of 3 items with pauses (Validated).",
   "tasks": [
     {
       "id": "process_items_loop",
+      "name": "process items loop",
       "action": "FOR",
       "variable": "current_item",
       "values": [
@@ -14,6 +16,7 @@
       "tasks": [
         {
           "id": "log_start",
+          "name": "log start",
           "action": "PRINT",
           "entries": [
             {
@@ -23,12 +26,14 @@
         },
         {
           "id": "simulated_work",
+          "name": "simulated work",
           "action": "SLEEP",
           "seconds": 2,
           "description": "Simulates 2 seconds of work"
         },
         {
           "id": "log_end",
+          "name": "log end",
           "action": "PRINT",
           "entries": [
             {

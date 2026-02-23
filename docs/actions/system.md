@@ -19,6 +19,7 @@ Executes a shell command on the local machine where `flowk` is running.
 ```json
 {
   "id": "local_build",
+  "name": "local_build",
   "action": "SHELL",
   "shell": { "program": "/bin/bash", "args": ["-c"] },
   "command": [
@@ -51,6 +52,7 @@ Encodes and decodes data using Go's `encoding/base64` implementation (no externa
 ```json
 {
   "id": "base64_encode_demo",
+  "name": "base64_encode_demo",
   "action": "BASE64",
   "operation": "ENCODE",
   "input": "FlowK",
@@ -79,6 +81,7 @@ Manages Docker containers and images.
 ```json
 {
   "id": "start_redis",
+  "name": "start_redis",
   "action": "DOCKER",
   "operation": "CONTAINER_RUN",
   "image": "redis:alpine",
@@ -107,6 +110,7 @@ Interacts with a Kubernetes cluster.
 ```json
 {
   "id": "scale_app",
+  "name": "scale_app",
   "action": "KUBERNETES",
   "operation": "SCALE",
   "namespace": "production",
@@ -137,6 +141,7 @@ Manages Helm repositories and release lifecycle operations.
 ```json
 {
   "id": "helm_upgrade",
+  "name": "helm_upgrade",
   "action": "HELM",
   "operation": "UPGRADE_INSTALL",
   "release_name": "web",

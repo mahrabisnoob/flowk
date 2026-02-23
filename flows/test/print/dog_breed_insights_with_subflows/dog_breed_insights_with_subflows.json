@@ -1,5 +1,6 @@
 {
   "id": "dog_breed_insights_with_subflows",
+  "name": "dog breed insights with subflows",
   "description": "Complex example that combines Dog API analytics with Kubernetes observability using reusable subflows.",
   "imports": [
     "./subflows/docker_http_mock_dog_api.json",
@@ -10,6 +11,7 @@
   "tasks": [
     {
       "id": "pipeline.print_intro",
+      "name": "pipeline print intro",
       "description": "Announce the start of the multi-stage insight pipeline.",
       "action": "PRINT",
       "entries": [
@@ -20,6 +22,7 @@
     },
     {
       "id": "pipeline.define_metadata",
+      "name": "pipeline define metadata",
       "description": "Declare metadata variables consumed by the imported subflows and final report.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -44,12 +47,14 @@
     },
     {
       "id": "pipeline.pause_before_subflows",
+      "name": "pipeline pause before subflows",
       "description": "Provide a short buffer so credentials and prerequisites can settle before imported tasks run.",
       "action": "SLEEP",
       "seconds": 2
     },
     {
       "id": "pipeline.print_wrap_up",
+      "name": "pipeline print wrap up",
       "description": "Emit a consolidated summary after all subflows complete.",
       "action": "PRINT",
       "entries": [

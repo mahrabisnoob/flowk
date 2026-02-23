@@ -7,18 +7,21 @@ import (
 
 func TestExpandParallelTaskPayloadSkipsNestedTasks(t *testing.T) {
 	raw := json.RawMessage(`{
-        "fail_fast": "${parallel_fail_fast}",
-        "merge_strategy": "${merge_strategy}",
-        "tasks": [
+          "fail_fast": "${parallel_fail_fast}",
+          "merge_strategy": "${merge_strategy}",
+          "tasks": [
             {
-                "id": "loop-task",
-                "action": "PRINT",
-                "entries": [
-                    {"message": "Iteration ${loop_counter}"}
-                ]
+              "action": "PRINT",
+              "entries": [
+                {
+                  "message": "Iteration ${loop_counter}"
+                }
+              ],
+              "id": "loop-task",
+              "name": "loop-task"
             }
-        ]
-    }`)
+          ]
+        }`)
 
 	vars := map[string]Variable{
 		"parallel_fail_fast": {Name: "parallel_fail_fast", Value: true},

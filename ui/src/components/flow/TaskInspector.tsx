@@ -106,6 +106,7 @@ function TaskInspector({ task }: TaskInspectorProps) {
     task.durationSeconds !== undefined ||
     typeof task.resultType === 'string' ||
     task.result !== undefined;
+  const displayName = task.name ?? task.id;
 
   return (
     <section className="task-inspector">
@@ -115,7 +116,7 @@ function TaskInspector({ task }: TaskInspectorProps) {
           <h3 className="task-inspector__title">
             {typeof task.description === 'string' && task.description.trim()
               ? task.description
-              : task.id}
+              : displayName}
           </h3>
         </div>
         <span className={`task-inspector__status task-inspector__status--${statusTone}`}>
@@ -136,6 +137,16 @@ function TaskInspector({ task }: TaskInspectorProps) {
               id="task-id"
               name="id"
               value={task.id}
+              readOnly
+              className="task-inspector__control task-inspector__control--readonly"
+            />
+          </div>
+          <div className="task-inspector__field">
+            <label htmlFor="task-name">{t('taskInspector.fields.name')}</label>
+            <input
+              id="task-name"
+              name="name"
+              value={displayName}
               readOnly
               className="task-inspector__control task-inspector__control--readonly"
             />

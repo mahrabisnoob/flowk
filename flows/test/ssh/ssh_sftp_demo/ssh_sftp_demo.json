@@ -1,5 +1,6 @@
 {
   "id": "ssh_sftp_demo",
+  "name": "ssh sftp demo",
   "description": "Uploads and downloads files over SSH SFTP",
   "imports": [
     "./subflows/docker_ssh_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "ssh.sftp.operations",
+      "name": "ssh sftp operations",
       "description": "Transfer files using SSH SFTP",
       "action": "SSH",
       "connection": {
@@ -30,6 +32,7 @@
       "steps": [
         {
           "id": "ssh.ensure_remote_dir",
+          "name": "ssh ensure remote dir",
           "operation": "RUN_COMMAND",
           "commands": [
             "mkdir -p /tmp/flowk_demo"
@@ -37,6 +40,7 @@
         },
         {
           "id": "ssh.sftp.upload",
+          "name": "ssh sftp upload",
           "operation": "SFTP",
           "method": "UPLOAD",
           "params": {
@@ -47,6 +51,7 @@
         },
         {
           "id": "ssh.sftp.download",
+          "name": "ssh sftp download",
           "operation": "SFTP",
           "method": "DOWNLOAD",
           "params": {
@@ -56,6 +61,7 @@
         },
         {
           "id": "ssh.sftp.list",
+          "name": "ssh sftp list",
           "operation": "SFTP",
           "method": "READ_DIR",
           "params": {

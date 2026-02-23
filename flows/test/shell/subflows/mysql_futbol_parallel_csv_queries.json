@@ -1,9 +1,11 @@
 {
   "id": "subflows.mysql_futbol_parallel_csv.queries",
+  "name": "subflows mysql futbol parallel csv queries",
   "description": "Run parallel football queries and validate expected results.",
   "tasks": [
     {
       "id": "parallel.futbol_queries",
+      "name": "parallel futbol queries",
       "description": "Run football queries in parallel",
       "action": "PARALLEL",
       "fail_fast": false,
@@ -16,6 +18,7 @@
       "tasks": [
         {
           "id": "query.player_count",
+          "name": "query player count",
           "description": "Count total players",
           "platform": "${platform_mysql_local}",
           "action": "DB_MYSQL_OPERATION",
@@ -25,6 +28,7 @@
         },
         {
           "id": "query.team_summary",
+          "name": "query team summary",
           "description": "Players grouped by team",
           "platform": "${platform_mysql_local}",
           "action": "DB_MYSQL_OPERATION",
@@ -34,6 +38,7 @@
         },
         {
           "id": "query.goal_sum",
+          "name": "query goal sum",
           "description": "Sum of all goals",
           "platform": "${platform_mysql_local}",
           "action": "DB_MYSQL_OPERATION",
@@ -45,6 +50,7 @@
     },
     {
       "id": "evaluate.futbol_expected",
+      "name": "evaluate futbol expected",
       "description": "Check that queries return the expected football data",
       "action": "EVALUATE",
       "if_conditions": [

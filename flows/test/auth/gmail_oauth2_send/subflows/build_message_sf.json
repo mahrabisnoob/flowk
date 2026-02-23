@@ -1,9 +1,11 @@
 {
   "id": "build_message_sf",
+  "name": "build message sf",
   "description": "Build RFC822 message and store base64url",
   "tasks": [
     {
       "id": "set_gmail_message_vars",
+      "name": "set gmail message vars",
       "description": "Set Gmail message fields",
       "action": "VARIABLES",
       "scope": "flow",
@@ -23,6 +25,7 @@
     },
     {
       "id": "build_gmail_message_base64url",
+      "name": "build gmail message base64url",
       "description": "Build RFC822 message and base64url encode it",
       "action": "BASE64",
       "operation": "ENCODE",
@@ -31,6 +34,7 @@
     },
     {
       "id": "set_gmail_message_raw",
+      "name": "set gmail message raw",
       "description": "Store base64url encoded message",
       "action": "VARIABLES",
       "scope": "flow",

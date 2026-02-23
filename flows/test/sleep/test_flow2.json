@@ -1,9 +1,11 @@
 {
   "id": "test_flow2",
+  "name": "test flow2",
   "description": "Test flow",
   "tasks": [
     {
       "id": "sleep1",
+      "name": "sleep1",
       "description": "Sleep for ten seconds",
       "action": "SLEEP",
       "seconds": 10

@@ -16,6 +16,7 @@ The `OAUTH2` action centralizes common OAuth 2.0 workflows in one task type. It 
 ```jsonc
 {
   "id": "oauth2.task",
+  "name": "oauth2.task",
   "action": "OAUTH2",
   "operation": "EXCHANGE_CODE",
   "token_url": "https://oauth2.googleapis.com/token",
@@ -58,10 +59,12 @@ The following flow demonstrates:
 ```jsonc
 {
   "id": "gmail_oauth_send_demo",
+  "name": "gmail_oauth_send_demo",
   "description": "Authorize with Google OAuth2 and send a message with Gmail API",
   "tasks": [
     {
       "id": "build_authorize_url",
+      "name": "build_authorize_url",
       "action": "OAUTH2",
       "operation": "AUTHORIZE_URL",
       "auth_url": "https://accounts.google.com/o/oauth2/v2/auth",
@@ -78,6 +81,7 @@ The following flow demonstrates:
     },
     {
       "id": "exchange_code",
+      "name": "exchange_code",
       "action": "OAUTH2",
       "operation": "EXCHANGE_CODE",
       "token_url": "https://oauth2.googleapis.com/token",
@@ -89,6 +93,7 @@ The following flow demonstrates:
     },
     {
       "id": "send_email",
+      "name": "send_email",
       "action": "HTTP_REQUEST",
       "protocol": "HTTPS",
       "method": "POST",

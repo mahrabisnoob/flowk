@@ -1,9 +1,11 @@
 {
   "id": "send_email_sf",
+  "name": "send email sf",
   "description": "Send Gmail message",
   "tasks": [
     {
       "id": "send_email",
+      "name": "send email",
       "action": "HTTP_REQUEST",
       "protocol": "HTTPS",
       "method": "POST",
@@ -13,7 +15,9 @@
         "Content-Type": "application/json"
       },
       "body": "{\"raw\":\"${gmail_message_raw_base64url}\"}",
-      "accepted_status_codes": [200]
+      "accepted_status_codes": [
+        200
+      ]
     }
   ]
 }

@@ -1,9 +1,11 @@
 {
   "id": "variables_arithmetic_demo",
+  "name": "variables arithmetic demo",
   "description": "Sample flow that demonstrates the arithmetic operations available in VARIABLES",
   "tasks": [
     {
       "id": "vars.initial_declaration",
+      "name": "vars initial declaration",
       "description": "Declares the base numeric variables and reusable operands",
       "action": "VARIABLES",
       "scope": "flow",
@@ -38,6 +40,7 @@
     },
     {
       "id": "print.initial_state",
+      "name": "print initial state",
       "description": "Prints the initial state of the numeric variables",
       "action": "PRINT",
       "entries": [
@@ -66,6 +69,7 @@
     },
     {
       "id": "vars.increment_counter",
+      "name": "vars increment counter",
       "description": "Increases the counter by adding the value of the increment variable",
       "action": "VARIABLES",
       "scope": "flow",
@@ -83,6 +87,7 @@
     },
     {
       "id": "vars.multiply_counter",
+      "name": "vars multiply counter",
       "description": "Multiplies the counter by the configured multiplier",
       "action": "VARIABLES",
       "scope": "flow",
@@ -100,6 +105,7 @@
     },
     {
       "id": "vars.subtract_counter",
+      "name": "vars subtract counter",
       "description": "Subtracts the decrement from the updated counter",
       "action": "VARIABLES",
       "scope": "flow",
@@ -117,6 +123,7 @@
     },
     {
       "id": "vars.divide_counter",
+      "name": "vars divide counter",
       "description": "Divides the counter to obtain the final result",
       "action": "VARIABLES",
       "scope": "flow",
@@ -134,6 +141,7 @@
     },
     {
       "id": "print.final_result",
+      "name": "print final result",
       "description": "Displays the details of each operation and the final counter value",
       "action": "PRINT",
       "entries": [

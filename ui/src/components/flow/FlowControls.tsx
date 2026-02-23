@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Square, FastForward, PlayCircle, PauseCircle } from 'lucide-react';
+import { Play, Square, FastForward, PlayCircle, PauseCircle, Save, RotateCcw, ToggleLeft, ToggleRight } from 'lucide-react';
 
 interface FlowControlsProps {
   onRun: () => void;
@@ -8,6 +8,10 @@ interface FlowControlsProps {
   onStop: () => void;
   onResume: () => void;
   onStopAtTask: () => void;
+  onSaveLayout: () => void;
+  onResetLayout: () => void;
+  onToggleAutoSaveLayout: () => void;
+  autoSaveLayout: boolean;
   isFlowRunning: boolean;
   runPending: boolean;
   taskRunPending: boolean;
@@ -26,6 +30,10 @@ const FlowControls: React.FC<FlowControlsProps> = ({
   onStop,
   onResume,
   onStopAtTask,
+  onSaveLayout,
+  onResetLayout,
+  onToggleAutoSaveLayout,
+  autoSaveLayout,
   isFlowRunning,
   runPending,
   taskRunPending,
@@ -87,6 +95,33 @@ const FlowControls: React.FC<FlowControlsProps> = ({
           title={t('buttons.resumeFromTask')}
         >
           <FastForward size={20} fill="currentColor" />
+        </button>
+      </div>
+
+      <div className="flow-controls__divider" />
+
+      <div className="flow-controls__group">
+        <button
+          className="flow-controls__button"
+          onClick={onSaveLayout}
+          title={t('buttons.saveLayout')}
+        >
+          <Save size={20} />
+        </button>
+        <button
+          className="flow-controls__button flow-controls__button--reset"
+          onClick={onResetLayout}
+          title={t('buttons.resetLayout')}
+        >
+          <RotateCcw size={20} />
+        </button>
+        <button
+          className="flow-controls__button flow-controls__button--toggle"
+          onClick={onToggleAutoSaveLayout}
+          data-active={autoSaveLayout ? 'true' : 'false'}
+          title={autoSaveLayout ? t('buttons.autoSaveLayoutOn') : t('buttons.autoSaveLayoutOff')}
+        >
+          {autoSaveLayout ? <ToggleRight size={20} /> : <ToggleLeft size={20} />}
         </button>
       </div>
     </div>

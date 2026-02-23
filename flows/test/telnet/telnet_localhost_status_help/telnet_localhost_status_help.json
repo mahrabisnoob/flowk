@@ -1,5 +1,6 @@
 {
   "id": "telnet_localhost_status_help",
+  "name": "telnet localhost status help",
   "description": "Simple Telnet flow that connects to localhost:4101 and runs status/help commands.",
   "imports": [
     "./subflows/docker_telnet_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "telnet.localhost.session",
+      "name": "telnet localhost session",
       "action": "TELNET",
       "host": "localhost",
       "port": 4101,
@@ -14,8 +16,14 @@
       "readTimeoutSeconds": 5,
       "lineEnding": "CRLF",
       "steps": [
-        { "connect": {} },
-        { "send": { "data": "echo status" } },
+        {
+          "connect": {}
+        },
+        {
+          "send": {
+            "data": "echo status"
+          }
+        },
         {
           "expect": {
             "pattern": "status",
@@ -23,14 +31,20 @@
             "timeoutSeconds": 3
           }
         },
-        { "send": { "data": "echo help" } },
+        {
+          "send": {
+            "data": "echo help"
+          }
+        },
         {
           "expect": {
             "pattern": "help",
             "timeoutSeconds": 3
           }
         },
-        { "close": {} }
+        {
+          "close": {}
+        }
       ]
     }
   ]

@@ -1,9 +1,11 @@
 {
   "id": "parallel.flow.demo",
+  "name": "parallel flow demo",
   "description": "Demonstrates the PARALLEL action executing multiple subtasks",
   "tasks": [
     {
       "id": "setup",
+      "name": "setup",
       "description": "Initialize shared variables",
       "action": "VARIABLES",
       "scope": "flow",
@@ -18,6 +20,7 @@
     },
     {
       "id": "parallel.work",
+      "name": "parallel work",
       "description": "Execute subtasks concurrently",
       "action": "PARALLEL",
       "fail_fast": false,
@@ -29,6 +32,7 @@
       "tasks": [
         {
           "id": "parallel.a",
+          "name": "parallel a",
           "description": "Set parallel value from branch A",
           "action": "VARIABLES",
           "scope": "flow",
@@ -43,6 +47,7 @@
         },
         {
           "id": "parallel.b",
+          "name": "parallel b",
           "description": "Set parallel value from branch B",
           "action": "VARIABLES",
           "scope": "flow",
@@ -59,6 +64,7 @@
     },
     {
       "id": "parallel.log",
+      "name": "parallel log",
       "description": "Log the base variable",
       "action": "PRINT",
       "entries": [

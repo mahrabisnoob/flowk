@@ -1,5 +1,6 @@
 export interface TaskDefinition extends Record<string, unknown> {
   id: string;
+  name?: string;
   description?: string;
   action: string;
   flowId?: string;
@@ -17,8 +18,10 @@ export interface TaskDefinition extends Record<string, unknown> {
 
 export interface FlowDefinition {
   id: string;
+  name?: string;
   description: string;
   imports?: string[];
+  flowNames?: Record<string, string>;
   tasks: TaskDefinition[];
   sourceFileName?: string;
 }

@@ -11,6 +11,7 @@ A **Flow** is the top-level unit of execution in FlowK. It is defined in a JSON 
 ```json
 {
   "id": "my-payment-flow",
+  "name": "my-payment-flow",
   "description": "Processes payments and updates database",
   "imports": [
     "./subflows/payment_gateway.json",
@@ -24,6 +25,7 @@ A **Flow** is the top-level unit of execution in FlowK. It is defined in a JSON 
 ```
 
 - **id**: Unique identifier for the flow.
+- **name**: Human-friendly name for the flow. Required for flows and subflows.
 - **imports**: List of other flow files to include. This is how subflows are defined. Paths are resolved relative to the main flow file. Imported tasks are prepended in import order.
   For cross-platform compatibility (Linux/macOS/Windows), prefer relative paths like `./subflows/...` and `../shared/...`. Forward slashes are supported on Windows.
 - **tasks**: Ordered array of tasks (including tasks from imported subflows).
@@ -33,11 +35,12 @@ A **Flow** is the top-level unit of execution in FlowK. It is defined in a JSON 
 
 ## Tasks
 
-A **Task** is a single unit of work. Every task must have an `id` and an `action`.
+A **Task** is a single unit of work. Every task must have an `id`, a `name`, and an `action`.
 
 ```json
 {
   "id": "check_service_health",
+  "name": "check_service_health",
   "description": "Pings the API to check availability",
   "action": "HTTP_REQUEST",
   "protocol": "HTTP",
@@ -48,6 +51,7 @@ A **Task** is a single unit of work. Every task must have an `id` and an `action
 
 ### Common Task Properties
 - **id**: Unique ID within the flow.
+- **name**: Human-readable task name.
 - **action**: The type of operation (e.g., `HTTP_REQUEST`, `SHELL`, `DB_MYSQL_OPERATION`).
 - **description**: Human-readable explanation.
 - Some control actions (e.g., `PARALLEL`, `FOR`) include a nested `tasks` array. Nested tasks follow the same structure.
@@ -62,6 +66,7 @@ Use the `VARIABLES` action to define or update variables.
 ```json
 {
   "id": "set_env",
+  "name": "set_env",
   "action": "VARIABLES",
   "vars": [
     { "name": "environment", "type": "string", "value": "production" },
@@ -74,6 +79,7 @@ Use the `VARIABLES` action to define or update variables.
 ```json
 {
   "id": "deploy",
+  "name": "deploy",
   "action": "SHELL",
   "command": "./deploy.sh ${environment}"
 }
@@ -87,6 +93,7 @@ If you need to preserve non-string types or build complex values, capture the re
 ```json
 {
   "id": "get_user",
+  "name": "get_user",
   "action": "HTTP_REQUEST",
   "protocol": "HTTPS",
   "method": "GET",
@@ -94,6 +101,7 @@ If you need to preserve non-string types or build complex values, capture the re
 },
 {
   "id": "log_user",
+  "name": "log_user",
   "action": "PRINT",
   "entries": [
     { "message": "User ID is: " },
@@ -110,6 +118,7 @@ Subflows are regular flow JSON files referenced in `imports`. They are expanded 
 ```json
 {
   "id": "payments.flow",
+  "name": "payments.flow",
   "description": "Parent flow that imports payment subflows",
   "imports": ["./subflows/payment_gateway.json"],
   "tasks": [ ... ],
@@ -123,10 +132,11 @@ Run multiple tasks concurrently using the `PARALLEL` action.
 ```json
 {
   "id": "run_checks",
+  "name": "run_checks",
   "action": "PARALLEL",
   "tasks": [
-    { "id": "check_db", "action": "DB_MYSQL_OPERATION", ... },
-    { "id": "check_api", "action": "HTTP_REQUEST", ... }
+    { "id": "check_db", "name": "check_db", "action": "DB_MYSQL_OPERATION", ... },
+    { "id": "check_api", "name": "check_api", "action": "HTTP_REQUEST", ... }
   ]
 }
 ```
@@ -137,12 +147,14 @@ Iterate over a list or numeric range using `FOR`.
 ```json
 {
   "id": "process_items",
+  "name": "process_items",
   "action": "FOR",
   "variable": "item",
   "values": ["item-a", "item-b", "item-c"],
   "tasks": [
     {
       "id": "process_single",
+      "name": "process_single",
       "action": "PRINT",
       "entries": [
         { "message": "Processing " },

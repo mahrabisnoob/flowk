@@ -1,9 +1,11 @@
 {
   "id": "subflows.mysql_futbol_parallel_csv.cleanup",
+  "name": "subflows mysql futbol parallel csv cleanup",
   "description": "Clean up CSV artifacts and MySQL Docker resources.",
   "tasks": [
     {
       "id": "shell.csv.cleanup",
+      "name": "shell csv cleanup",
       "description": "Remove temporary CSV from host",
       "action": "SHELL",
       "command": [
@@ -20,6 +22,7 @@
     },
     {
       "id": "truncate_all_tables_mysql",
+      "name": "truncate all tables mysql",
       "description": "Truncate all tables in flowk_db",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -28,6 +31,7 @@
     },
     {
       "id": "docker.container.stop.mysql",
+      "name": "docker container stop mysql",
       "description": "Stop MySQL container",
       "action": "DOCKER",
       "operation": "CONTAINER_STOP",
@@ -36,6 +40,7 @@
     },
     {
       "id": "docker.container.remove.mysql",
+      "name": "docker container remove mysql",
       "description": "Remove MySQL container",
       "action": "DOCKER",
       "operation": "CONTAINER_REMOVE",
@@ -44,6 +49,7 @@
     },
     {
       "id": "docker.image.remove.mysql",
+      "name": "docker image remove mysql",
       "description": "Remove MySQL Docker image",
       "action": "DOCKER",
       "operation": "IMAGE_REMOVE",

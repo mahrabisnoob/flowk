@@ -1,5 +1,6 @@
 {
   "id": "dev_flow_cassandra_redacted",
+  "name": "dev flow cassandra redacted",
   "description": "Cassandra validation flow",
   "imports": [
     "./subflows/docker_cassandra_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "vars.cassandra_inventory",
+      "name": "vars cassandra inventory",
       "description": "Declare Cassandra inventory configurations",
       "action": "VARIABLES",
       "scope": "flow",
@@ -65,6 +67,7 @@
     },
     {
       "id": "check_connection_all_us-south1",
+      "name": "check connection all us south1",
       "description": "Check connection for all_us-south1.",
       "platform": "${platform_all_us-south1}",
       "action": "DB_CASSANDRA_OPERATION",
@@ -72,6 +75,7 @@
     },
     {
       "id": "check_connection_europe-north1",
+      "name": "check connection europe north1",
       "description": "Check connection for _europe-north1.",
       "platform": "${platform_europe-north1}",
       "action": "DB_CASSANDRA_OPERATION",
@@ -79,6 +83,7 @@
     },
     {
       "id": "list_all_objects_all_us-south1",
+      "name": "list all objects all us south1",
       "description": "List all Cassandra objects in all_us-south1",
       "platform": "${platform_all_us-south1}",
       "action": "DB_CASSANDRA_OPERATION",
@@ -86,6 +91,7 @@
     },
     {
       "id": "list_all_objects_europe-north1",
+      "name": "list all objects europe north1",
       "description": "List all Cassandra objects in _europe-north1",
       "platform": "${platform_europe-north1}",
       "action": "DB_CASSANDRA_OPERATION",
@@ -93,6 +99,7 @@
     },
     {
       "id": "wait_before_next_ops",
+      "name": "wait before next ops",
       "description": "Wait before next operations",
       "action": "SLEEP",
       "seconds": 1

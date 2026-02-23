@@ -7,7 +7,11 @@ import TaskTypeIcon, { getVariantForAction } from './TaskTypeIcon';
 function TaskNode({ data }: NodeProps<TaskNodeData>) {
   const { t } = useTranslation();
   const { task, isSelected, isStopTarget, nestedChildCount, nestedChildLabel } = data;
-  const title = typeof task.description === 'string' && task.description.trim() ? task.description : task.id;
+  const displayName = task.name ?? task.id;
+  const descriptionLine =
+    typeof task.description === 'string' && task.description.trim()
+      ? task.description
+      : task.id;
 
   const normalizedStatus = typeof task.status === 'string' ? task.status.toLowerCase() : '';
   const isRunning = normalizedStatus === 'in progress' || normalizedStatus === 'running';
@@ -53,8 +57,8 @@ function TaskNode({ data }: NodeProps<TaskNodeData>) {
           <div className="task-node__icon-container" style={{ color: variant.color, backgroundColor: variant.background }}>
             {variant.icon}
           </div>          <div className="task-node__title-container">
-            <div className="task-node__title" title={title}>{title}</div>
-            <div className="task-node__id" title={task.id}>{task.id}</div>
+            <div className="task-node__title" title={displayName}>{displayName}</div>
+            <div className="task-node__id" title={descriptionLine}>{descriptionLine}</div>
           </div>
         </div>
 

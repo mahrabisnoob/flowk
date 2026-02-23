@@ -39,6 +39,7 @@ All operations return `flow.ResultTypeJSON`.
 ```json
 {
   "id": "list_pods",
+  "name": "list_pods",
   "action": "KUBERNETES",
   "operation": "GET_PODS",
   "context": "DEV_CLUSTER",

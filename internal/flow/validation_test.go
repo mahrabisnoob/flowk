@@ -59,17 +59,19 @@ func TestValidateDefinitionAgainstSchema_ActionRemoval(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	sleepFlow := []byte(`{
-    "id": "sleep-flow",
-    "description": "sleep test",
-    "tasks": [
-      {
-        "id": "sleep",
-        "description": "sleep action",
-        "action": "SLEEP",
-        "seconds": 1
-      }
-    ]
-  }`)
+      "description": "sleep test",
+      "id": "sleep-flow",
+      "name": "sleep-flow",
+      "tasks": [
+        {
+          "action": "SLEEP",
+          "description": "sleep action",
+          "id": "sleep",
+          "name": "sleep",
+          "seconds": 1
+        }
+      ]
+    }`)
 	sleepPath := filepath.Join(tmpDir, "sleep.json")
 	if err := os.WriteFile(sleepPath, sleepFlow, 0o600); err != nil {
 		t.Fatalf("writing sleep flow: %v", err)
@@ -79,19 +81,21 @@ func TestValidateDefinitionAgainstSchema_ActionRemoval(t *testing.T) {
 	}
 
 	httpFlow := []byte(`{
-    "id": "http-flow",
-    "description": "http test",
-    "tasks": [
-      {
-        "id": "http",
-        "description": "http action",
-        "action": "HTTP_REQUEST",
-        "protocol": "HTTP",
-        "method": "GET",
-        "url": "https://example.com"
-      }
-    ]
-  }`)
+      "description": "http test",
+      "id": "http-flow",
+      "name": "http-flow",
+      "tasks": [
+        {
+          "action": "HTTP_REQUEST",
+          "description": "http action",
+          "id": "http",
+          "method": "GET",
+          "name": "http",
+          "protocol": "HTTP",
+          "url": "https://example.com"
+        }
+      ]
+    }`)
 	httpPath := filepath.Join(tmpDir, "http.json")
 	if err := os.WriteFile(httpPath, httpFlow, 0o600); err != nil {
 		t.Fatalf("writing http flow: %v", err)
@@ -124,28 +128,33 @@ func TestValidateDefinitionAgainstSchema_ActionSpecificOperations(t *testing.T) 
 	tmpDir := t.TempDir()
 
 	flowContent := []byte(`{
-    "id": "platform-ops",
-    "description": "mixed cassandra and kubernetes operations",
-    "tasks": [
-      {
-        "id": "cassandra.check",
-        "description": "ensure connectivity",
-        "action": "DB_CASSANDRA_OPERATION",
-        "platform": "prod",
-        "operation": "CHECK_CONNECTION"
-      },
-      {
-        "id": "kubernetes.scale",
-        "description": "scale api deployment",
-        "action": "KUBERNETES",
-        "context": "dev-context",
-        "operation": "SCALE",
-        "namespace": "default",
-        "deployments": ["api"],
-        "replicas": 3
-      }
-    ]
-  }`)
+      "description": "mixed cassandra and kubernetes operations",
+      "id": "platform-ops",
+      "name": "platform-ops",
+      "tasks": [
+        {
+          "action": "DB_CASSANDRA_OPERATION",
+          "description": "ensure connectivity",
+          "id": "cassandra.check",
+          "name": "cassandra.check",
+          "operation": "CHECK_CONNECTION",
+          "platform": "prod"
+        },
+        {
+          "action": "KUBERNETES",
+          "context": "dev-context",
+          "deployments": [
+            "api"
+          ],
+          "description": "scale api deployment",
+          "id": "kubernetes.scale",
+          "name": "kubernetes.scale",
+          "namespace": "default",
+          "operation": "SCALE",
+          "replicas": 3
+        }
+      ]
+    }`)
 
 	flowPath := filepath.Join(tmpDir, "flow.json")
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
@@ -173,17 +182,19 @@ func TestValidateDefinitionAgainstSchema_HelmFragmentDoesNotRestrictOtherOperati
 
 	tmpDir := t.TempDir()
 	flowContent := []byte(`{
-    "id": "docker-only",
-    "description": "validate docker operations with helm schema present",
-    "tasks": [
-      {
-        "id": "docker.pull",
-        "action": "DOCKER",
-        "operation": "IMAGE_PULL",
-        "image": "alpine:3.19"
-      }
-    ]
-  }`)
+      "description": "validate docker operations with helm schema present",
+      "id": "docker-only",
+      "name": "docker-only",
+      "tasks": [
+        {
+          "action": "DOCKER",
+          "id": "docker.pull",
+          "image": "alpine:3.19",
+          "name": "docker.pull",
+          "operation": "IMAGE_PULL"
+        }
+      ]
+    }`)
 	flowPath := filepath.Join(tmpDir, "flow.json")
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)

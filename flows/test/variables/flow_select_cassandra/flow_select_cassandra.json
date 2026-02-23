@@ -1,5 +1,6 @@
 {
   "id": "flow_select_cassandra",
+  "name": "flow select cassandra",
   "description": "Test flow",
   "imports": [
     "./subflows/docker_cassandra_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "vars.cassandra_platforms",
+      "name": "vars cassandra platforms",
       "description": "Declare Cassandra platform configurations",
       "action": "VARIABLES",
       "scope": "flow",
@@ -56,6 +58,7 @@
     },
     {
       "id": "check_connection_all_us-east4",
+      "name": "check connection all us east4",
       "description": "Check connection for all_us-east4.",
       "platform": "${us-east4}",
       "action": "DB_CASSANDRA_OPERATION",

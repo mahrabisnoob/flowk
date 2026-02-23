@@ -1,9 +1,11 @@
 {
   "id": "parallel.flow.demo",
+  "name": "parallel flow demo",
   "description": "Demonstrates the PARALLEL action executing multiple subtasks",
   "tasks": [
     {
       "id": "parallel.work",
+      "name": "parallel work",
       "description": "Execute subtasks concurrently",
       "action": "PARALLEL",
       "fail_fast": false,
@@ -15,12 +17,14 @@
       "tasks": [
         {
           "id": "sleep_1",
+          "name": "sleep 1",
           "description": "Demonstrates sleep_1 the PARALLEL action executing multiple subtasks",
           "action": "SLEEP",
           "seconds": 5
         },
         {
           "id": "sleep_2",
+          "name": "sleep 2",
           "description": "Demonstrates sleep_1 the PARALLEL action executing multiple subtasks",
           "action": "SLEEP",
           "seconds": 5

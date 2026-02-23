@@ -1,9 +1,11 @@
 {
   "id": "subflows.cleanup_pipeline",
+  "name": "subflows cleanup pipeline",
   "description": "Cleanup tasks executed during rollback scenarios.",
   "tasks": [
     {
       "id": "scale-api-down",
+      "name": "scale api down",
       "description": "Scale the API deployment back to a single replica during rollback.",
       "action": "PRINT",
       "entries": [
@@ -19,6 +21,7 @@
     },
     {
       "id": "archive-deployment-logs",
+      "name": "archive deployment logs",
       "description": "Archive deployment logs for future analysis.",
       "action": "PRINT",
       "entries": [

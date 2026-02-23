@@ -24,6 +24,7 @@ Executes operations against a MySQL or MariaDB database.
 ```json
 {
   "id": "query_users",
+  "name": "query_users",
   "action": "DB_MYSQL_OPERATION",
   "operation": "SQL",
   "database": "app_db",
@@ -49,6 +50,7 @@ Executes operations against a PostgreSQL database.
 ```json
 {
   "id": "create_schema",
+  "name": "create_schema",
   "action": "DB_POSTGRES_OPERATION",
   "operation": "SQL",
   "database": "analytics",
@@ -74,6 +76,7 @@ Executes operations against a Cassandra / ScyllaDB cluster.
 ```json
 {
   "id": "query_sensor_data",
+  "name": "query_sensor_data",
   "action": "DB_CASSANDRA_OPERATION",
   "operation": "CQL",
   "keyspace": "iot_data",

@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import ReactFlow, {
   Background,
   Controls,
   Edge,
   MarkerType,
   Node,
+  NodeChange,
   NodeMouseHandler,
   Position,
   useNodesState,
@@ -28,6 +29,7 @@ import {
   isParallelTask,
   isRecord
 } from '../../utils/flowUtils';
+import { FlowLayoutSnapshot, fetchLayoutSnapshot, saveLayoutSnapshot, deleteLayoutSnapshot } from '../../utils/layoutStorage';
 
 const nodeTypes = {
   taskNode: TaskNode,
@@ -39,11 +41,13 @@ const nodeTypes = {
 
 interface FlowCanvasProps {
   flow: FlowDefinition;
+  flowNameById?: Map<string, string>;
   selectedTaskId?: string;
   stopAtTaskId?: string;
   onTaskSelect: (taskId: string) => void;
   focusTaskId?: string;
   onTaskFocusHandled?: (taskId: string) => void;
+  autoSaveLayout?: boolean;
 }
 
 interface TaskNodeData {
@@ -71,14 +75,20 @@ interface ParallelGroupData {
 
 type FlowNodeData = TaskNodeData | SubflowGroupData | ForLoopGroupData | ParallelGroupData | ParallelChildNodeData;
 
+export type FlowCanvasHandle = {
+  saveLayout: () => void;
+  resetLayout: () => void;
+};
+
 
 
 const estimateNodeWidth = (task: TaskDefinition): number => {
   const descriptionLength =
     typeof task.description === 'string' ? task.description.length : 0;
   const actionLength = typeof task.action === 'string' ? task.action.length : 0;
+  const nameLength = typeof task.name === 'string' ? task.name.length : task.id.length;
   const base = 280;
-  const estimate = base + (descriptionLength + actionLength + task.id.length) * 2.5;
+  const estimate = base + (descriptionLength + actionLength + nameLength) * 2.5;
   return Math.min(Math.max(estimate, 320), 680);
 };
 
@@ -92,14 +102,19 @@ const estimateNodeHeight = (task: TaskDefinition): number => {
 
 
 
-function FlowCanvas({
-  flow,
-  onTaskSelect,
-  selectedTaskId,
-  stopAtTaskId,
-  focusTaskId,
-  onTaskFocusHandled
-}: FlowCanvasProps) {
+const FlowCanvas = forwardRef<FlowCanvasHandle, FlowCanvasProps>(function FlowCanvas(
+  {
+    flow,
+    flowNameById,
+    onTaskSelect,
+    selectedTaskId,
+    stopAtTaskId,
+    focusTaskId,
+    onTaskFocusHandled,
+    autoSaveLayout = true
+  },
+  ref
+) {
   const rfInstanceRef = useRef<ReactFlowInstance | null>(null);
   const lastCenteredTaskIdRef = useRef<string | undefined>(undefined);
   const taskLookup = useMemo(() => {
@@ -115,6 +130,31 @@ function FlowCanvas({
     visit(flow.tasks);
     return map;
   }, [flow.tasks]);
+
+  const [layoutSnapshot, setLayoutSnapshot] = useState<FlowLayoutSnapshot | null>(null);
+  const [layoutSeed, setLayoutSeed] = useState(0);
+  const layoutPositions = useMemo(() => layoutSnapshot?.nodes ?? {}, [layoutSnapshot]);
+  const persistedViewport = layoutSnapshot?.viewport;
+
+  useEffect(() => {
+    let isActive = true;
+    setLayoutSnapshot(null);
+    setLayoutSeed(0);
+    const load = async () => {
+      const snapshot = await fetchLayoutSnapshot(flow.id, flow.sourceFileName);
+      if (!isActive || !snapshot) {
+        return;
+      }
+      setLayoutSnapshot(snapshot);
+      if (snapshot.nodes && Object.keys(snapshot.nodes).length > 0) {
+        setLayoutSeed((seed) => seed + 1);
+      }
+    };
+    void load();
+    return () => {
+      isActive = false;
+    };
+  }, [flow.id, flow.sourceFileName]);
 
   const buildNodes = useCallback(
     (
@@ -133,6 +173,9 @@ function FlowCanvas({
         const nodeId = task.id;
         const width = estimateNodeWidth(task);
         const baseHeight = estimateNodeHeight(task);
+        const savedPosition = layoutPositions[nodeId];
+        const nodeX = savedPosition ? savedPosition.x : currentX;
+        const nodeY = savedPosition ? savedPosition.y : baseY;
 
         // No inline layout - both FOR and PARALLEL will use visual grouping
         const height = baseHeight;
@@ -145,7 +188,7 @@ function FlowCanvas({
             isSelected: false,
             isStopTarget: false
           },
-          position: { x: currentX, y: baseY },
+          position: { x: nodeX, y: nodeY },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           style: { width, height }
@@ -153,12 +196,12 @@ function FlowCanvas({
         nodes.push(node);
 
         // Render FOR or PARALLEL children as separate nodes
-        let maxChildX = currentX; // Track the rightmost position of children
+        let maxChildX = nodeX; // Track the rightmost position of children
 
         if (isForTask(task)) {
           const forChildren = extractForChildren(task);
           if (forChildren.length > 0) {
-            const childResult = buildNodes(forChildren, lane + 1, currentX, baseY + verticalSpacing);
+            const childResult = buildNodes(forChildren, lane + 1, nodeX, baseY + verticalSpacing);
             nodes.push(...childResult.nodes);
             inlineEdges.push(...childResult.inlineEdges);
 
@@ -188,7 +231,7 @@ function FlowCanvas({
         } else if (isParallelTask(task)) {
           const parallelChildren = extractParallelChildren(task);
           if (parallelChildren.length > 0) {
-            const childResult = buildNodes(parallelChildren, lane + 1, currentX, baseY + verticalSpacing);
+            const childResult = buildNodes(parallelChildren, lane + 1, nodeX, baseY + verticalSpacing);
             nodes.push(...childResult.nodes);
             inlineEdges.push(...childResult.inlineEdges);
 
@@ -218,19 +261,19 @@ function FlowCanvas({
         }
 
         if (task.children?.length) {
-          const childResult = buildNodes(task.children, lane + 1, currentX, baseY + verticalSpacing);
+          const childResult = buildNodes(task.children, lane + 1, nodeX, baseY + verticalSpacing);
           nodes.push(...childResult.nodes);
           inlineEdges.push(...childResult.inlineEdges);
         }
 
         // Use the maximum of parent width or children extent for spacing
-        const effectiveWidth = Math.max(width, maxChildX - currentX);
-        currentX += effectiveWidth + horizontalGap;
+        const effectiveWidth = Math.max(width, maxChildX - nodeX);
+        currentX = nodeX + effectiveWidth + horizontalGap;
       });
 
       return { nodes, inlineEdges };
     },
-    []
+    [layoutPositions]
   );
 
   const { nodes: initialTaskNodes, inlineEdges: parallelChildEdges } = useMemo(
@@ -521,6 +564,7 @@ function FlowCanvas({
       const parts = flowId.split('.');
       return parts[parts.length - 1] || flowId;
     };
+    const resolveFlowLabel = (flowId: string) => flowNameById?.get(flowId) ?? formatLabel(flowId);
 
     const subflowGroupNodes: Node<FlowNodeData>[] = Array.from(subflowGroups.entries()).map(
       ([flowId, bounds]) => {
@@ -530,10 +574,10 @@ function FlowCanvas({
           id: `subflow-group-${flowId}`,
           type: 'subflowGroup',
           position: { x: bounds.minX - paddingX, y: bounds.minY - paddingY },
-          data: { label: formatLabel(flowId) },
+          data: { label: resolveFlowLabel(flowId) },
           style: { width, height },
-          draggable: false,
-          selectable: false,
+          draggable: true,
+          selectable: true,
           focusable: false,
           zIndex: 0
         };
@@ -544,9 +588,7 @@ function FlowCanvas({
       ([forParentId, { minX, minY, maxX, maxY, parentTask, childCount }]) => {
         const width = maxX - minX + paddingX * 2;
         const height = maxY - minY + paddingY * 2;
-        const label = typeof parentTask.description === 'string' && parentTask.description.trim()
-          ? parentTask.description
-          : parentTask.id;
+        const label = parentTask.name ?? parentTask.description ?? parentTask.id;
         const flowId = parentTask.flowId;
         const subflowBounds = flowId && flowId !== rootFlowId ? subflowGroups.get(flowId) : undefined;
         const absolutePosition = { x: minX - paddingX, y: minY - paddingY };
@@ -561,8 +603,9 @@ function FlowCanvas({
             : absolutePosition,
           data: { label, taskCount: childCount },
           style: { width, height },
-          draggable: false,
-          selectable: false,
+          draggable: true,
+          selectable: true,
+          dragHandle: '.for-loop-group__header',
           focusable: false,
           parentNode: parentOrigin ? `subflow-group-${flowId}` : undefined,
           extent: parentOrigin ? 'parent' : undefined,
@@ -575,9 +618,7 @@ function FlowCanvas({
       ([parallelParentId, { minX, minY, maxX, maxY, parentTask, childCount }]) => {
         const width = maxX - minX + paddingX * 2;
         const height = maxY - minY + paddingY * 2;
-        const label = typeof parentTask.description === 'string' && parentTask.description.trim()
-          ? parentTask.description
-          : parentTask.id;
+        const label = parentTask.name ?? parentTask.description ?? parentTask.id;
         const flowId = parentTask.flowId;
         const subflowBounds = flowId && flowId !== rootFlowId ? subflowGroups.get(flowId) : undefined;
         const absolutePosition = { x: minX - paddingX, y: minY - paddingY };
@@ -592,8 +633,9 @@ function FlowCanvas({
             : absolutePosition,
           data: { label, taskCount: childCount },
           style: { width, height },
-          draggable: false,
-          selectable: false,
+          draggable: true,
+          selectable: true,
+          dragHandle: '.parallel-group__header',
           focusable: false,
           parentNode: parentOrigin ? `subflow-group-${flowId}` : undefined,
           extent: parentOrigin ? 'parent' : undefined,
@@ -603,11 +645,105 @@ function FlowCanvas({
     );
 
     return [...subflowGroupNodes, ...forLoopGroupNodes, ...parallelGroupNodes, ...updatedTaskNodes];
-  }, [initialTaskNodes, flow.id]);
+  }, [initialTaskNodes, flow.id, flowNameById]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowNodeData>(nodesWithGroups);
   const viewportRef = useRef<{ x: number; y: number; zoom: number }>({ x: 0, y: 0, zoom: 1 });
+  const nodesRef = useRef<Node<FlowNodeData>[]>(nodesWithGroups);
+  const saveTimeoutRef = useRef<number | null>(null);
+  const prevFlowIdRef = useRef(flow.id);
+  const prevLayoutSeedRef = useRef(layoutSeed);
   const lastAutoCenteredRef = useRef<{ failed?: string; inProgress?: string }>({});
+  const autoSaveEnabled = autoSaveLayout !== false;
+
+  useEffect(() => {
+    nodesRef.current = nodes;
+  }, [nodes]);
+
+  const buildLayoutSnapshot = useCallback(
+    (snapshotNodes: Node<FlowNodeData>[]): FlowLayoutSnapshot => {
+      const nodeById = new Map(snapshotNodes.map((node) => [node.id, node]));
+      const resolveAbsolutePosition = (node: Node<FlowNodeData>): { x: number; y: number } => {
+        let x = node.position.x;
+        let y = node.position.y;
+        let parentId = node.parentNode;
+        let guard = 0;
+        while (parentId && guard < snapshotNodes.length) {
+          const parent = nodeById.get(parentId);
+          if (!parent) {
+            break;
+          }
+          x += parent.position.x;
+          y += parent.position.y;
+          parentId = parent.parentNode;
+          guard += 1;
+        }
+        return { x, y };
+      };
+
+      const positions: Record<string, { x: number; y: number }> = {};
+      snapshotNodes.forEach((node) => {
+        if (node.type !== 'taskNode') {
+          return;
+        }
+        positions[node.id] = resolveAbsolutePosition(node);
+      });
+
+      return {
+        version: 1,
+        viewport: viewportRef.current,
+        nodes: positions
+      };
+    },
+    []
+  );
+
+  const saveLayoutNow = useCallback(() => {
+    const snapshot = buildLayoutSnapshot(nodesRef.current);
+    void saveLayoutSnapshot(flow.id, flow.sourceFileName, snapshot);
+  }, [buildLayoutSnapshot, flow.id, flow.sourceFileName]);
+
+  const scheduleLayoutSave = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    if (!autoSaveEnabled) {
+      return;
+    }
+    if (saveTimeoutRef.current) {
+      window.clearTimeout(saveTimeoutRef.current);
+    }
+    saveTimeoutRef.current = window.setTimeout(() => {
+      saveLayoutNow();
+    }, 500);
+  }, [autoSaveEnabled, saveLayoutNow]);
+
+  const resetLayoutNow = useCallback(() => {
+    void deleteLayoutSnapshot(flow.id, flow.sourceFileName);
+    setLayoutSnapshot(null);
+    setLayoutSeed((seed) => seed + 1);
+    const instance = rfInstanceRef.current;
+    if (instance) {
+      instance.fitView({ padding: 0.2 });
+    }
+  }, [flow.id, flow.sourceFileName]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      saveLayout: saveLayoutNow,
+      resetLayout: resetLayoutNow
+    }),
+    [resetLayoutNow, saveLayoutNow]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current && typeof window !== 'undefined') {
+        window.clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [flow.id]);
 
   const inProgressTaskId = useMemo(() => {
     const findInProgress = (tasks: TaskDefinition[]): string | undefined => {
@@ -645,23 +781,35 @@ function FlowCanvas({
   }, [flow.tasks]);
 
   useEffect(() => {
-    setNodes(
-      nodesWithGroups.map((node) => {
+    const flowChanged = prevFlowIdRef.current !== flow.id;
+    prevFlowIdRef.current = flow.id;
+    const layoutChanged = prevLayoutSeedRef.current !== layoutSeed;
+    prevLayoutSeedRef.current = layoutSeed;
+    const shouldResetPositions = flowChanged || layoutChanged;
+    setNodes((currentNodes) => {
+      const prevById = shouldResetPositions
+        ? new Map<string, Node<FlowNodeData>>()
+        : new Map(currentNodes.map((node) => [node.id, node]));
+      return nodesWithGroups.map((node) => {
+        const previous = prevById.get(node.id);
+        const position = previous ? previous.position : node.position;
+
         if (node.type !== 'taskNode') {
-          return node;
+          return { ...node, position } as Node<FlowNodeData>;
         }
         const data = node.data as TaskNodeData;
         return {
           ...node,
+          position,
           data: {
             ...data,
             isSelected: node.id === selectedTaskId,
             isStopTarget: node.id === stopAtTaskId
           }
-        };
-      })
-    );
-  }, [nodesWithGroups, selectedTaskId, stopAtTaskId, setNodes]);
+        } as Node<FlowNodeData>;
+      });
+    });
+  }, [nodesWithGroups, selectedTaskId, stopAtTaskId, flow.id, layoutSeed, setNodes]);
 
   useEffect(() => {
     const instance = rfInstanceRef.current;
@@ -669,6 +817,15 @@ function FlowCanvas({
     const anyInstance = instance as unknown as { updateNodeInternals?: (id: string) => void };
     nodes.forEach((node) => anyInstance.updateNodeInternals?.(node.id));
   }, [nodes]);
+
+  useEffect(() => {
+    const instance = rfInstanceRef.current;
+    if (!instance || !persistedViewport) {
+      return;
+    }
+    instance.setViewport(persistedViewport);
+    viewportRef.current = persistedViewport;
+  }, [persistedViewport]);
 
   const centerNode = useCallback(
     (targetId: string, duration = 600) => {
@@ -851,6 +1008,17 @@ function FlowCanvas({
     return [...baseEdges, ...parallelChildEdges];
   }, [flow.tasks, taskLookup, parallelChildEdges]);
 
+  const handleNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      onNodesChange(changes);
+      const moved = changes.some((change) => change.type === 'position');
+      if (moved) {
+        scheduleLayoutSave();
+      }
+    },
+    [onNodesChange, scheduleLayoutSave]
+  );
+
   const handleNodeClick: NodeMouseHandler = (_, node) => {
     if (node.type !== 'taskNode') {
       return;
@@ -863,16 +1031,22 @@ function FlowCanvas({
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
+        onNodesChange={handleNodesChange}
         onNodeClick={handleNodeClick}
         nodeTypes={nodeTypes}
         onMoveEnd={(_, viewport) => {
           // viewport: { x, y, zoom }
           viewportRef.current = viewport as { x: number; y: number; zoom: number };
+          scheduleLayoutSave();
         }}
         onInit={(instance) => {
           rfInstanceRef.current = instance;
-          instance.fitView({ padding: 0.2 });
+          if (persistedViewport) {
+            instance.setViewport(persistedViewport);
+            viewportRef.current = persistedViewport;
+          } else {
+            instance.fitView({ padding: 0.2 });
+          }
         }}
         style={{ width: '100%', height: '100%' }}
       >
@@ -881,7 +1055,7 @@ function FlowCanvas({
       </ReactFlow>
     </div>
   );
-}
+});
 
 export type { TaskNodeData };
 export default FlowCanvas;

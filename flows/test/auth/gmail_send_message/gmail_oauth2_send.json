@@ -1,5 +1,6 @@
 {
   "id": "gmail_send_message_demo",
+  "name": "gmail send message demo",
   "description": "Refresh OAuth2 access token and send a Gmail message using the GMAIL action",
   "imports": [
     "../flow_credentials/gmail_secrets_sf.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "build_gmail_message_base64url",
+      "name": "build gmail message base64url",
       "description": "Build RFC822 message and base64url encode it",
       "action": "BASE64",
       "operation": "ENCODE",
@@ -15,6 +17,7 @@
     },
     {
       "id": "refresh_access_token",
+      "name": "refresh access token",
       "action": "HTTP_REQUEST",
       "protocol": "HTTPS",
       "method": "POST",
@@ -29,6 +32,7 @@
     },
     {
       "id": "send_message",
+      "name": "send message",
       "action": "GMAIL",
       "operation": "SEND_MESSAGE",
       "access_token": "${from.task:refresh_access_token.result$.response.body.access_token}",

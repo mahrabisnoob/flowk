@@ -1,5 +1,6 @@
 {
   "id": "ssh_raspberrypi_example",
+  "name": "ssh raspberrypi example",
   "description": "Ejecuta comandos en una Raspberry Pi accesible por clave SSH",
   "imports": [
     "./subflows/docker_ssh_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "ssh.raspberrypi.healthcheck",
+      "name": "ssh raspberrypi healthcheck",
       "description": "Checks basic information about the remote system",
       "action": "SSH",
       "connection": {
@@ -23,6 +25,7 @@
       "steps": [
         {
           "id": "ssh.verify_identity",
+          "name": "ssh verify identity",
           "operation": "RUN_COMMAND_OUTPUT",
           "commands": [
             "whoami",
@@ -31,6 +34,7 @@
         },
         {
           "id": "ssh.check_uptime",
+          "name": "ssh check uptime",
           "operation": "RUN_COMMAND",
           "commands": [
             "uptime"
@@ -38,6 +42,7 @@
         },
         {
           "id": "ssh.disk_usage",
+          "name": "ssh disk usage",
           "operation": "RUN_COMMAND",
           "commands": [
             "df -h /"

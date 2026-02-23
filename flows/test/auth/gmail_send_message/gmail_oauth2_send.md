@@ -10,10 +10,12 @@ Expected format (FlowK subflow that sets variables):
 ```json
 {
   "id": "gmail_secrets_sf",
+  "name": "gmail_secrets_sf",
   "description": "Define Gmail OAuth2 credentials for demo flows.",
   "tasks": [
     {
       "id": "vars.gmail_secrets",
+      "name": "vars.gmail_secrets",
       "action": "VARIABLES",
       "scope": "flow",
       "overwrite": true,

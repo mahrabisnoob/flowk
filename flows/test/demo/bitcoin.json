@@ -1,9 +1,11 @@
 {
   "id": "bitcoin_price_flow",
+  "name": "bitcoin price flow",
   "description": "Flow to get the current Bitcoin price in euros",
   "tasks": [
     {
       "id": "get_bitcoin_price",
+      "name": "get bitcoin price",
       "description": "Query the CoinGecko API to get the current Bitcoin price in EUR",
       "action": "HTTP_REQUEST",
       "protocol": "HTTPS",
@@ -15,6 +17,7 @@
     },
     {
       "id": "store_price",
+      "name": "store price",
       "description": "Store the Bitcoin price in a variable",
       "action": "VARIABLES",
       "vars": [
@@ -27,6 +30,7 @@
     },
     {
       "id": "print_result",
+      "name": "print result",
       "description": "Show the result",
       "action": "PRINT",
       "entries": [

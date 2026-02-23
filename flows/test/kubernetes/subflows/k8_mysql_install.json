@@ -1,9 +1,11 @@
 {
   "id": "subflows.k8_mysql_install",
+  "name": "subflows k8 mysql install",
   "description": "Install MySQL via Helm and wait for readiness.",
   "tasks": [
     {
       "id": "helm.install_mysql",
+      "name": "helm install mysql",
       "action": "HELM",
       "description": "Install MySQL for the CI/CD pipeline using the local mysql-lite chart.",
       "operation": "INSTALL",
@@ -26,6 +28,7 @@
     },
     {
       "id": "k8.wait_mysql_ready",
+      "name": "k8 wait mysql ready",
       "description": "Wait for MySQL to become ready before connecting.",
       "action": "KUBERNETES",
       "operation": "WAIT_FOR_POD_READINESS",

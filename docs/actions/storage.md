@@ -20,6 +20,7 @@ Interacts with Google Cloud Storage blocks.
 ```json
 {
   "id": "list_backups",
+  "name": "list_backups",
   "action": "GCLOUD_STORAGE",
   "operation": "LS",
   "list": {
@@ -33,6 +34,7 @@ Interacts with Google Cloud Storage blocks.
 ```json
 {
   "id": "upload_log",
+  "name": "upload_log",
   "action": "GCLOUD_STORAGE",
   "operation": "CP",
   "copy": {

@@ -1,9 +1,11 @@
 {
   "id": "n8n_example1_json_tutorial",
+  "name": "n8n example1 json tutorial",
   "description": "FlowK adaptation of the n8n JSON tutorial flow (earn JSON basics with an interactive step-by-step tutorial for beginners).",
   "tasks": [
     {
       "id": "print.tutorial",
+      "name": "print tutorial",
       "description": "Intro instructions for the JSON tutorial",
       "action": "PRINT",
       "entries": [
@@ -14,6 +16,7 @@
     },
     {
       "id": "print.video_tutorial",
+      "name": "print video tutorial",
       "description": "Video tutorial reference",
       "action": "PRINT",
       "entries": [
@@ -24,6 +27,7 @@
     },
     {
       "id": "print.execute_workflow",
+      "name": "print execute workflow",
       "description": "Execute workflow animation",
       "action": "PRINT",
       "entries": [
@@ -34,6 +38,7 @@
     },
     {
       "id": "vars.key_value",
+      "name": "vars key value",
       "description": "Defines basic key/value pairs",
       "action": "VARIABLES",
       "scope": "flow",
@@ -52,6 +57,7 @@
     },
     {
       "id": "print.note_key_value",
+      "name": "print note key value",
       "description": "Explains key/value pairs",
       "action": "PRINT",
       "entries": [
@@ -70,6 +76,7 @@
     },
     {
       "id": "vars.string",
+      "name": "vars string",
       "description": "Defines a JSON string example",
       "action": "VARIABLES",
       "scope": "flow",
@@ -83,6 +90,7 @@
     },
     {
       "id": "print.note_string",
+      "name": "print note string",
       "description": "Explains strings",
       "action": "PRINT",
       "entries": [
@@ -97,6 +105,7 @@
     },
     {
       "id": "vars.number",
+      "name": "vars number",
       "description": "Defines JSON number examples",
       "action": "VARIABLES",
       "scope": "flow",
@@ -115,6 +124,7 @@
     },
     {
       "id": "print.note_number",
+      "name": "print note number",
       "description": "Explains numbers",
       "action": "PRINT",
       "entries": [
@@ -133,6 +143,7 @@
     },
     {
       "id": "vars.boolean",
+      "name": "vars boolean",
       "description": "Defines a JSON boolean example",
       "action": "VARIABLES",
       "scope": "flow",
@@ -146,6 +157,7 @@
     },
     {
       "id": "print.note_boolean",
+      "name": "print note boolean",
       "description": "Explains booleans",
       "action": "PRINT",
       "entries": [
@@ -160,6 +172,7 @@
     },
     {
       "id": "vars.null",
+      "name": "vars null",
       "description": "Defines a JSON null example",
       "action": "VARIABLES",
       "scope": "flow",
@@ -173,6 +186,7 @@
     },
     {
       "id": "print.note_null",
+      "name": "print note null",
       "description": "Explains null",
       "action": "PRINT",
       "entries": [
@@ -187,6 +201,7 @@
     },
     {
       "id": "vars.array",
+      "name": "vars array",
       "description": "Defines a JSON array example",
       "action": "VARIABLES",
       "scope": "flow",
@@ -205,6 +220,7 @@
     },
     {
       "id": "print.note_array",
+      "name": "print note array",
       "description": "Explains arrays",
       "action": "PRINT",
       "entries": [
@@ -219,6 +235,7 @@
     },
     {
       "id": "vars.object",
+      "name": "vars object",
       "description": "Defines a JSON object example",
       "action": "VARIABLES",
       "scope": "flow",
@@ -244,6 +261,7 @@
     },
     {
       "id": "print.note_object",
+      "name": "print note object",
       "description": "Explains objects",
       "action": "PRINT",
       "entries": [
@@ -258,6 +276,7 @@
     },
     {
       "id": "vars.expressions",
+      "name": "vars expressions",
       "description": "Uses task references to build derived values",
       "action": "VARIABLES",
       "scope": "flow",
@@ -281,6 +300,7 @@
     },
     {
       "id": "print.note_expressions",
+      "name": "print note expressions",
       "description": "Explains expressions",
       "action": "PRINT",
       "entries": [
@@ -303,6 +323,7 @@
     },
     {
       "id": "vars.final_exam",
+      "name": "vars final exam",
       "description": "Final summary combining all previous examples",
       "action": "VARIABLES",
       "scope": "flow",
@@ -341,6 +362,7 @@
     },
     {
       "id": "print.note_final_exam",
+      "name": "print note final exam",
       "description": "Final exam summary",
       "action": "PRINT",
       "entries": [
@@ -375,6 +397,7 @@
     },
     {
       "id": "print.eval_workflow",
+      "name": "print eval workflow",
       "description": "Eval workflow reference",
       "action": "PRINT",
       "entries": [
@@ -385,6 +408,7 @@
     },
     {
       "id": "print.feedback",
+      "name": "print feedback",
       "description": "Feedback and contact information",
       "action": "PRINT",
       "entries": [

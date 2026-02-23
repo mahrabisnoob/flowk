@@ -1,5 +1,6 @@
 {
   "id": "musicbrainz_json_asserts",
+  "name": "musicbrainz json asserts",
   "description": "Flow generated from a Bruno test to validate the MusicBrainz JSON response (subset compatible with EVALUATE).",
   "imports": [
     "./subflows/docker_http_mock_musicbrainz.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "vars.musicbrainz_request",
+      "name": "vars musicbrainz request",
       "description": "Configure the artist parameters to query",
       "action": "VARIABLES",
       "scope": "flow",
@@ -26,6 +28,7 @@
     },
     {
       "id": "get_artist",
+      "name": "get artist",
       "description": "Query the artist in MusicBrainz",
       "action": "HTTP_REQUEST",
       "protocol": "HTTP",
@@ -37,6 +40,7 @@
     },
     {
       "id": "assert_response_basics",
+      "name": "assert response basics",
       "description": "Validate status and main response fields",
       "action": "EVALUATE",
       "if_conditions": [
@@ -90,6 +94,7 @@
     },
     {
       "id": "assert_lengths_and_nulls",
+      "name": "assert lengths and nulls",
       "description": "Validate lengths, nulls, and boolean flags",
       "action": "EVALUATE",
       "if_conditions": [
@@ -143,6 +148,7 @@
     },
     {
       "id": "assert_country_codes",
+      "name": "assert country codes",
       "description": "Validate ISO codes in the area",
       "action": "EVALUATE",
       "if_conditions": [
@@ -166,6 +172,7 @@
     },
     {
       "id": "assert_extended_validators",
+      "name": "assert extended validators",
       "description": "Additional validations supported by new operators",
       "action": "EVALUATE",
       "if_conditions": [

@@ -641,7 +641,7 @@ func TestExecuteStopsLoopOnBreakControl(t *testing.T) {
 		}, nil
 	}
 
-	raw := []byte("{\"variable\":\"item\",\"values\":[\"first\",\"second\"],\"tasks\":[{\"id\":\"breaker\",\"action\":\"EVALUATE\"}]}")
+	raw := []byte("{\"tasks\":[{\"action\":\"EVALUATE\",\"id\":\"breaker\",\"name\":\"breaker\"}],\"values\":[\"first\",\"second\"],\"variable\":\"item\"}")
 
 	result, err := act.Execute(context.Background(), raw, execCtx)
 	if err != nil {

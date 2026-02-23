@@ -29,6 +29,7 @@ decode text or file contents without depending on external binaries.
 ```json
 {
   "id": "encode.inline",
+  "name": "encode.inline",
   "action": "BASE64",
   "operation": "ENCODE",
   "input": "hola flowk",
@@ -41,6 +42,7 @@ decode text or file contents without depending on external binaries.
 ```json
 {
   "id": "decode.file",
+  "name": "decode.file",
   "action": "BASE64",
   "operation": "DECODE",
   "inputFile": "./tmp/payload.txt.b64",

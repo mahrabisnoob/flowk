@@ -20,6 +20,10 @@
     "stopFlow": "Detener flujo",
     "stoppingFlow": "Deteniendo...",
     "resumeFromTask": "Reanudar desde tarea",
+    "saveLayout": "Guardar layout",
+    "resetLayout": "Restablecer layout",
+    "autoSaveLayoutOn": "Auto-guardado de layout: activado",
+    "autoSaveLayoutOff": "Auto-guardado de layout: desactivado",
     "addTask": "Añadir tarea",
     "open": "Abrir",
     "delete": "Cerrar"
@@ -36,7 +40,8 @@
     "runError": "Ocurrió un error al iniciar la ejecución.",
     "resumeError": "Ocurrió un error al reanudar la ejecución.",
     "stopError": "Ocurrió un error al detener la ejecución.",
-    "stopAtError": "Ocurrió un error al marcar la tarea de parada."
+    "stopAtError": "Ocurrió un error al marcar la tarea de parada.",
+    "resetLayoutConfirm": "¿Restablecer el layout guardado para este flujo?"
   },
   "flowList": {
     "title": "Flujos disponibles",
@@ -110,6 +115,7 @@
     "logsEmpty": "No hay registros para esta tarea.",
     "fields": {
       "id": "Identificador",
+      "name": "Nombre",
       "description": "Descripción",
       "action": "Acción",
       "operation": "Operación",

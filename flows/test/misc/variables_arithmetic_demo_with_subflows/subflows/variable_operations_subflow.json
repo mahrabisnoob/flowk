@@ -1,9 +1,11 @@
 {
   "id": "subflows.variable_operations_subflow",
+  "name": "subflows variable operations subflow",
   "description": "Performs arithmetic operations with the declared variables",
   "tasks": [
     {
       "id": "vars.increment_counter",
+      "name": "vars increment counter",
       "description": "Increases the counter by adding the value of the increment variable",
       "action": "VARIABLES",
       "scope": "flow",
@@ -21,6 +23,7 @@
     },
     {
       "id": "vars.multiply_counter",
+      "name": "vars multiply counter",
       "description": "Multiplies the counter by the configured multiplier",
       "action": "VARIABLES",
       "scope": "flow",
@@ -38,6 +41,7 @@
     },
     {
       "id": "vars.subtract_counter",
+      "name": "vars subtract counter",
       "description": "Subtracts the decrement from the updated counter",
       "action": "VARIABLES",
       "scope": "flow",
@@ -55,6 +59,7 @@
     },
     {
       "id": "vars.divide_counter",
+      "name": "vars divide counter",
       "description": "Divides the counter to obtain the final result",
       "action": "VARIABLES",
       "scope": "flow",

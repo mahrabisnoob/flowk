@@ -1,9 +1,11 @@
 {
   "id": "http_test_2",
+  "name": "http test 2",
   "description": "Get Dogg facts test",
   "tasks": [
     {
       "id": "vars.loop_control",
+      "name": "vars loop control",
       "description": "Initializes loop control variables",
       "action": "VARIABLES",
       "scope": "flow",
@@ -23,6 +25,7 @@
     },
     {
       "id": "000",
+      "name": "000",
       "description": "Get dog facts",
       "action": "HTTP_REQUEST",
       "protocol": "HTTPS",
@@ -35,6 +38,7 @@
     },
     {
       "id": "vars.increment_counter",
+      "name": "vars increment counter",
       "description": "Increments the counter by adding the value of the increment variable",
       "action": "VARIABLES",
       "scope": "flow",
@@ -52,6 +56,7 @@
     },
     {
       "id": "exitFromLoop",
+      "name": "exitFromLoop",
       "description": "Exits from loop",
       "action": "EVALUATE",
       "if_conditions": [
@@ -70,6 +75,7 @@
     },
     {
       "id": "evaluateLifeMaxAndMin",
+      "name": "evaluateLifeMaxAndMin",
       "description": "Affenpinscher life checks",
       "action": "EVALUATE",
       "if_conditions": [

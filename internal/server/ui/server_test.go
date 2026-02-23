@@ -22,38 +22,48 @@ func TestStoreFlowDefinitionCopiesImports(t *testing.T) {
 
 	subflowPath := filepath.Join(subflowDir, "child.json")
 	subflowContent := `{
-  "id": "child_flow",
-  "description": "sub flow",
-  "tasks": [
-    {
-      "id": "child_task",
-      "description": "child task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "child"}
-      ]
-    }
-  ]
-}`
+    "description": "sub flow",
+    "id": "child_flow",
+    "name": "child_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "child task",
+        "entries": [
+          {
+            "message": "child"
+          }
+        ],
+        "id": "child_task",
+        "name": "child_task"
+      }
+    ]
+  }`
 	if err := os.WriteFile(subflowPath, []byte(subflowContent), 0o600); err != nil {
 		t.Fatalf("writing subflow: %v", err)
 	}
 
 	rootFlow := `{
-  "id": "root_flow",
-  "description": "root",
-  "imports": ["subflows/tic/child.json"],
-  "tasks": [
-    {
-      "id": "root_task",
-      "description": "root task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "root"}
-      ]
-    }
-  ]
-}`
+    "description": "root",
+    "id": "root_flow",
+    "imports": [
+      "subflows/tic/child.json"
+    ],
+    "name": "root_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "root task",
+        "entries": [
+          {
+            "message": "root"
+          }
+        ],
+        "id": "root_task",
+        "name": "root_task"
+      }
+    ]
+  }`
 
 	origWD, err := os.Getwd()
 	if err != nil {
@@ -102,38 +112,48 @@ func TestStoreFlowDefinitionRewritesEscapingImport(t *testing.T) {
 
 	childPath := filepath.Join(sharedDir, "child.json")
 	childContent := `{
-  "id": "child_flow",
-  "description": "child",
-  "tasks": [
-    {
-      "id": "child_task",
-      "description": "child task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "child"}
-      ]
-    }
-  ]
-}`
+    "description": "child",
+    "id": "child_flow",
+    "name": "child_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "child task",
+        "entries": [
+          {
+            "message": "child"
+          }
+        ],
+        "id": "child_task",
+        "name": "child_task"
+      }
+    ]
+  }`
 	if err := os.WriteFile(childPath, []byte(childContent), 0o600); err != nil {
 		t.Fatalf("writing child flow: %v", err)
 	}
 
 	rootFlow := `{
-  "id": "root_flow",
-  "description": "root",
-  "imports": ["../shared/child.json"],
-  "tasks": [
-    {
-      "id": "root_task",
-      "description": "root task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "root"}
-      ]
-    }
-  ]
-}`
+    "description": "root",
+    "id": "root_flow",
+    "imports": [
+      "../shared/child.json"
+    ],
+    "name": "root_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "root task",
+        "entries": [
+          {
+            "message": "root"
+          }
+        ],
+        "id": "root_task",
+        "name": "root_task"
+      }
+    ]
+  }`
 
 	origWD, err := os.Getwd()
 	if err != nil {
@@ -192,38 +212,48 @@ func TestStoreFlowDefinitionRefreshesImports(t *testing.T) {
 
 	subflowPath := filepath.Join(subflowDir, "child.json")
 	subflowContentV1 := `{
-  "id": "child_flow",
-  "description": "sub flow v1",
-  "tasks": [
-    {
-      "id": "child_task",
-      "description": "child task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "child-v1"}
-      ]
-    }
-  ]
-}`
+    "description": "sub flow v1",
+    "id": "child_flow",
+    "name": "child_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "child task",
+        "entries": [
+          {
+            "message": "child-v1"
+          }
+        ],
+        "id": "child_task",
+        "name": "child_task"
+      }
+    ]
+  }`
 	if err := os.WriteFile(subflowPath, []byte(subflowContentV1), 0o600); err != nil {
 		t.Fatalf("writing subflow v1: %v", err)
 	}
 
 	rootFlow := `{
-  "id": "root_flow",
-  "description": "root",
-  "imports": ["subflows/tic/child.json"],
-  "tasks": [
-    {
-      "id": "root_task",
-      "description": "root task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "root"}
-      ]
-    }
-  ]
-}`
+    "description": "root",
+    "id": "root_flow",
+    "imports": [
+      "subflows/tic/child.json"
+    ],
+    "name": "root_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "root task",
+        "entries": [
+          {
+            "message": "root"
+          }
+        ],
+        "id": "root_task",
+        "name": "root_task"
+      }
+    ]
+  }`
 
 	origWD, err := os.Getwd()
 	if err != nil {
@@ -324,20 +354,26 @@ func TestStoreFlowDefinitionMissingImport(t *testing.T) {
 	repo := t.TempDir()
 
 	rootFlow := `{
-  "id": "root_flow",
-  "description": "root",
-  "imports": ["subflows/tic/missing.json"],
-  "tasks": [
-    {
-      "id": "root_task",
-      "description": "root task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "root"}
-      ]
-    }
-  ]
-}`
+    "description": "root",
+    "id": "root_flow",
+    "imports": [
+      "subflows/tic/missing.json"
+    ],
+    "name": "root_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "root task",
+        "entries": [
+          {
+            "message": "root"
+          }
+        ],
+        "id": "root_task",
+        "name": "root_task"
+      }
+    ]
+  }`
 
 	origWD, err := os.Getwd()
 	if err != nil {
@@ -362,7 +398,7 @@ func TestStoreFlowDefinitionMissingImport(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error for missing import, got nil")
 	}
-	if !strings.Contains(err.Error(), "no se encontrA3 el archivo requerido") {
+	if !strings.Contains(err.Error(), "required file") {
 		t.Fatalf("unexpected error message: %v", err)
 	}
 }
@@ -384,38 +420,48 @@ func TestStoreFlowDefinitionSearchesParentDirForImports(t *testing.T) {
 
 	subflowPath := filepath.Join(subflowDir, "child.json")
 	subflowContent := `{
-  "id": "child_flow",
-  "description": "sub flow external",
-  "tasks": [
-    {
-      "id": "child_task",
-      "description": "child task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "child"}
-      ]
-    }
-  ]
-}`
+    "description": "sub flow external",
+    "id": "child_flow",
+    "name": "child_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "child task",
+        "entries": [
+          {
+            "message": "child"
+          }
+        ],
+        "id": "child_task",
+        "name": "child_task"
+      }
+    ]
+  }`
 	if err := os.WriteFile(subflowPath, []byte(subflowContent), 0o600); err != nil {
 		t.Fatalf("writing external subflow: %v", err)
 	}
 
 	rootFlow := `{
-  "id": "root_flow",
-  "description": "root",
-  "imports": ["subflows/tic/child.json"],
-  "tasks": [
-    {
-      "id": "root_task",
-      "description": "root task",
-      "action": "PRINT",
-      "entries": [
-        {"message": "root"}
-      ]
-    }
-  ]
-}`
+    "description": "root",
+    "id": "root_flow",
+    "imports": [
+      "subflows/tic/child.json"
+    ],
+    "name": "root_flow",
+    "tasks": [
+      {
+        "action": "PRINT",
+        "description": "root task",
+        "entries": [
+          {
+            "message": "root"
+          }
+        ],
+        "id": "root_task",
+        "name": "root_task"
+      }
+    ]
+  }`
 
 	origWD, err := os.Getwd()
 	if err != nil {

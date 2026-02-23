@@ -1,9 +1,11 @@
 {
   "id": "public_api_test_fixed",
+  "name": "public api test fixed",
   "description": "Connectivity test against JSONPlaceholder (Validated).",
   "tasks": [
     {
       "id": "setup_config",
+      "name": "setup config",
       "action": "VARIABLES",
       "description": "Configure the users endpoint",
       "vars": [
@@ -21,6 +23,7 @@
     },
     {
       "id": "get_user_data",
+      "name": "get user data",
       "action": "HTTP_REQUEST",
       "description": "Fetches data for user 1",
       "protocol": "HTTPS",
@@ -29,6 +32,7 @@
     },
     {
       "id": "print_confirmation",
+      "name": "print confirmation",
       "action": "PRINT",
       "description": "Confirms that the request was sent",
       "entries": [

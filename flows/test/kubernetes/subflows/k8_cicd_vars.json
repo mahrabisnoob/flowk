@@ -1,9 +1,11 @@
 {
   "id": "subflows.k8_cicd_vars",
+  "name": "subflows k8 cicd vars",
   "description": "Define shared Kubernetes, Helm, and MySQL variables for the CI/CD flow.",
   "tasks": [
     {
       "id": "vars.cicd_context",
+      "name": "vars cicd context",
       "description": "Set Kubernetes + Helm defaults for the flow.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -73,6 +75,7 @@
     },
     {
       "id": "vars.mysql_platform",
+      "name": "vars mysql platform",
       "description": "Define the MySQL platform configuration used by DB tasks.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -100,6 +103,7 @@
     },
     {
       "id": "vars.release_names",
+      "name": "vars release names",
       "description": "Compute release names for the Helm installs.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -119,6 +123,7 @@
     },
     {
       "id": "vars.resource_names",
+      "name": "vars resource names",
       "description": "Capture derived resource names created by the Helm charts.",
       "action": "VARIABLES",
       "scope": "flow",

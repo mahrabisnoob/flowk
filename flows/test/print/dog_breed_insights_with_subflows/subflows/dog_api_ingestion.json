@@ -1,9 +1,11 @@
 {
   "id": "subflows.dog_api_ingestion",
+  "name": "subflows dog api ingestion",
   "description": "Bootstrap Dog API configuration, fetch a page of breeds, and persist reusable variables for downstream analytics.",
   "tasks": [
     {
       "id": "dog_api.configure_context",
+      "name": "dog api configure context",
       "description": "Define base configuration for Dog API discovery and reset previous values.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -38,6 +40,7 @@
     },
     {
       "id": "dog_api.announce_start",
+      "name": "dog api announce start",
       "description": "Log the discovery intent prior to calling the API.",
       "action": "PRINT",
       "entries": [
@@ -53,6 +56,7 @@
     },
     {
       "id": "dog_api.fetch_page",
+      "name": "dog api fetch page",
       "description": "Retrieve the configured page of dog breeds from the public API.",
       "action": "HTTP_REQUEST",
       "protocol": "HTTP",
@@ -64,6 +68,7 @@
     },
     {
       "id": "dog_api.evaluate_response",
+      "name": "dog api evaluate response",
       "description": "Ensure the HTTP response is successful and carries at least ten breeds for meaningful analysis.",
       "action": "EVALUATE",
       "if_conditions": [
@@ -87,6 +92,7 @@
     },
     {
       "id": "dog_api.persist_variables",
+      "name": "dog api persist variables",
       "description": "Store the HTTP payload and convenience lists for downstream consumers.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -125,6 +131,7 @@
     },
     {
       "id": "dog_api.print_overview",
+      "name": "dog api print overview",
       "description": "Summarize the fetched data, highlighting hypoallergenic breeds and pagination details.",
       "action": "PRINT",
       "entries": [

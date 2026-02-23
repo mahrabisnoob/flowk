@@ -1,9 +1,11 @@
 {
   "id": "forloop_string_iteration",
+  "name": "forloop string iteration",
   "description": "Demonstrates iterating over a string using the FOR action values list.",
   "tasks": [
     {
       "id": "initialize_word",
+      "name": "initialize word",
       "description": "Prepare the variable that will accumulate the generated word.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -18,6 +20,7 @@
     },
     {
       "id": "loop_letters",
+      "name": "loop letters",
       "description": "Iterate over each character in the literal FLOWK string.",
       "action": "FOR",
       "variable": "current_letter",
@@ -34,6 +37,7 @@
       "tasks": [
         {
           "id": "print_current_letter",
+          "name": "print current letter",
           "description": "Log the active letter for the current iteration.",
           "action": "PRINT",
           "entries": [
@@ -44,6 +48,7 @@
         },
         {
           "id": "append_letter_to_word",
+          "name": "append letter to word",
           "description": "Append the active letter to the flow scoped variable.",
           "action": "VARIABLES",
           "scope": "flow",
@@ -60,6 +65,7 @@
     },
     {
       "id": "print_final_word",
+      "name": "print final word",
       "description": "Display the final word produced by the loop.",
       "action": "PRINT",
       "entries": [

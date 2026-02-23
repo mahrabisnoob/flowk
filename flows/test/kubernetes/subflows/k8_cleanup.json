@@ -1,9 +1,11 @@
 {
   "id": "subflows.k8_cleanup",
+  "name": "subflows k8 cleanup",
   "description": "Remove Helm releases created during the flow.",
   "tasks": [
     {
       "id": "helm.uninstall_app",
+      "name": "helm uninstall app",
       "action": "HELM",
       "description": "Remove the app release.",
       "operation": "UNINSTALL",
@@ -16,6 +18,7 @@
     },
     {
       "id": "helm.uninstall_mysql",
+      "name": "helm uninstall mysql",
       "action": "HELM",
       "description": "Remove the MySQL release.",
       "operation": "UNINSTALL",

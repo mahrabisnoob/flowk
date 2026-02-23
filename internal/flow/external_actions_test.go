@@ -19,7 +19,7 @@ func TestLoadDefinitionAcceptsRegisteredExternalAction(t *testing.T) {
 	ensureExternalActionRegistered()
 
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"external.action","description":"test","tasks":[{"id":"ext","description":"external task","action":"EXTERNAL_TEST_ACTION"}]}`)
+	content := []byte(`{"description":"test","id":"external.action","name":"external.action","tasks":[{"action":"EXTERNAL_TEST_ACTION","description":"external task","id":"ext","name":"ext"}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -34,7 +34,7 @@ func TestLoadDefinitionRejectsUnknownExternalAction(t *testing.T) {
 	flow.SetupSchemaProviderForTesting(t)
 
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"external.unknown","description":"test","tasks":[{"id":"ext","description":"external task","action":"MISSING_EXTERNAL_ACTION"}]}`)
+	content := []byte(`{"description":"test","id":"external.unknown","name":"external.unknown","tasks":[{"action":"MISSING_EXTERNAL_ACTION","description":"external task","id":"ext","name":"ext"}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
