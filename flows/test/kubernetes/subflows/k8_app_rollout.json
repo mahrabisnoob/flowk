@@ -1,9 +1,11 @@
 {
   "id": "subflows.k8_app_rollout",
+  "name": "subflows k8 app rollout",
   "description": "Deploy the sample app and perform scale down/up operations.",
   "tasks": [
     {
       "id": "helm.install_app",
+      "name": "helm install app",
       "action": "HELM",
       "description": "Install a sample app deployment to simulate CI/CD rollouts.",
       "operation": "INSTALL",
@@ -21,6 +23,7 @@
     },
     {
       "id": "k8.scale_app_down",
+      "name": "k8 scale app down",
       "description": "Scale the app deployment down to zero for a maintenance window.",
       "action": "KUBERNETES",
       "operation": "SCALE",
@@ -33,6 +36,7 @@
     },
     {
       "id": "k8.scale_app_up",
+      "name": "k8 scale app up",
       "description": "Scale the app deployment back up after maintenance.",
       "action": "KUBERNETES",
       "operation": "SCALE",
@@ -45,6 +49,7 @@
     },
     {
       "id": "k8.wait_app_ready",
+      "name": "k8 wait app ready",
       "description": "Wait for the app pods to become ready again.",
       "action": "KUBERNETES",
       "operation": "WAIT_FOR_POD_READINESS",

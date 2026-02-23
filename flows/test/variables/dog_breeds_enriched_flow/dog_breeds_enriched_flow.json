@@ -1,5 +1,6 @@
 {
   "id": "dog_breeds_enriched_flow",
+  "name": "dog breeds enriched flow",
   "description": "Reference flow that interacts with the Dog API and demonstrates advanced use of VARIABLES, PRINT, and EVALUATE",
   "imports": [
     "./subflows/docker_http_mock_dog_api.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "vars.initial_configuration",
+      "name": "vars initial configuration",
       "description": "Defines reusable configuration variables for the breed collection",
       "action": "VARIABLES",
       "scope": "flow",
@@ -55,6 +57,7 @@
     },
     {
       "id": "http.fetch_breeds",
+      "name": "http fetch breeds",
       "description": "Calls the public dog API to obtain a page of breeds",
       "action": "HTTP_REQUEST",
       "protocol": "HTTP",
@@ -66,6 +69,7 @@
     },
     {
       "id": "vars.breed_metrics",
+      "name": "vars breed metrics",
       "description": "Calculates metrics from the API response",
       "action": "VARIABLES",
       "scope": "flow",
@@ -116,6 +120,7 @@
     },
     {
       "id": "print.overview",
+      "name": "print overview",
       "description": "Displays relevant data by combining text, variables, and task fields",
       "action": "PRINT",
       "entries": [
@@ -151,6 +156,7 @@
     },
     {
       "id": "evaluate.valid_response",
+      "name": "evaluate valid response",
       "description": "Verifies that the HTTP response was successful and contains data",
       "action": "EVALUATE",
       "if_conditions": [
@@ -174,6 +180,7 @@
     },
     {
       "id": "print.final_summary",
+      "name": "print final summary",
       "description": "Emits an extended summary that combines data after the evaluations",
       "action": "PRINT",
       "entries": [

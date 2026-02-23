@@ -229,6 +229,7 @@ multi-step provisioning flows.
 ```jsonc
 {
   "id": "ssh.provision.node",
+  "name": "ssh.provision.node",
   "description": "Provision application dependencies over SSH",
   "action": "SSH",
   "connection": {

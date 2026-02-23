@@ -1,9 +1,11 @@
 {
   "id": "base64_roundtrip_demo",
+  "name": "base64 roundtrip demo",
   "description": "Encodes and decodes a payload using BASE64, then validates the roundtrip result.",
   "tasks": [
     {
       "id": "vars.seed",
+      "name": "vars seed",
       "action": "VARIABLES",
       "scope": "flow",
       "overwrite": true,
@@ -17,6 +19,7 @@
     },
     {
       "id": "base64.encode",
+      "name": "base64 encode",
       "action": "BASE64",
       "operation": "ENCODE",
       "input": "${plain_message}",
@@ -24,6 +27,7 @@
     },
     {
       "id": "base64.decode",
+      "name": "base64 decode",
       "action": "BASE64",
       "operation": "DECODE",
       "input": "${from.task:base64.encode.result$.stdout}",
@@ -31,6 +35,7 @@
     },
     {
       "id": "evaluate.roundtrip",
+      "name": "evaluate roundtrip",
       "action": "EVALUATE",
       "if_conditions": [
         {
@@ -48,6 +53,7 @@
     },
     {
       "id": "print.summary",
+      "name": "print summary",
       "action": "PRINT",
       "entries": [
         {

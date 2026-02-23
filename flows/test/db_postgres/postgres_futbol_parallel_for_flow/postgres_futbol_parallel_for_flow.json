@@ -1,5 +1,6 @@
 {
   "id": "postgres_futbol_parallel_for_flow",
+  "name": "postgres futbol parallel for flow",
   "description": "Postgres flow with FOR, PARALLEL and EVALUATE actions using football data",
   "imports": [
     "./subflows/docker_postgres_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "vars.postgres_futbol",
+      "name": "vars postgres futbol",
       "description": "Declare Postgres platform configuration and expected values",
       "action": "VARIABLES",
       "scope": "flow",
@@ -46,6 +48,7 @@
     },
     {
       "id": "check_connection_pg",
+      "name": "check connection pg",
       "description": "Check connection to Postgres",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -53,6 +56,7 @@
     },
     {
       "id": "create_players_table_pg",
+      "name": "create players table pg",
       "description": "Create football players table",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -62,6 +66,7 @@
     },
     {
       "id": "truncate_players_table_pg",
+      "name": "truncate players table pg",
       "description": "Ensure the table starts empty",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -71,6 +76,7 @@
     },
     {
       "id": "for.insert_players",
+      "name": "for insert players",
       "description": "Insert football players with FOR",
       "action": "FOR",
       "variable": "player_row",
@@ -83,6 +89,7 @@
       "tasks": [
         {
           "id": "insert_player_pg",
+          "name": "insert player pg",
           "description": "Insert one football player",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -94,6 +101,7 @@
     },
     {
       "id": "parallel.futbol_queries",
+      "name": "parallel futbol queries",
       "description": "Run football queries in parallel",
       "action": "PARALLEL",
       "fail_fast": false,
@@ -106,6 +114,7 @@
       "tasks": [
         {
           "id": "query.player_count",
+          "name": "query player count",
           "description": "Count total players",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -115,6 +124,7 @@
         },
         {
           "id": "query.team_summary",
+          "name": "query team summary",
           "description": "Players grouped by team",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -124,6 +134,7 @@
         },
         {
           "id": "query.goal_sum",
+          "name": "query goal sum",
           "description": "Sum of all goals",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -135,6 +146,7 @@
     },
     {
       "id": "evaluate.futbol_expected",
+      "name": "evaluate futbol expected",
       "description": "Check that queries return the expected football data",
       "action": "EVALUATE",
       "if_conditions": [
@@ -158,6 +170,7 @@
     },
     {
       "id": "truncate_all_tables_pg",
+      "name": "truncate all tables pg",
       "description": "Truncate all tables in flowk_db",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",

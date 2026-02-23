@@ -1,19 +1,21 @@
 {
   "id": "docker_cassandra_local_setup",
+  "name": "docker cassandra local setup",
   "description": "Start a local Cassandra container and prepare keyspaces for test flows.",
   "tasks": [
     {
       "id": "docker.pull.cassandra",
+      "name": "docker pull cassandra",
       "action": "DOCKER",
       "operation": "IMAGE_PULL",
       "image": "cassandra:4.1"
     },
     {
       "id": "docker.run.cassandra",
+      "name": "flowk-cassandra",
       "action": "DOCKER",
       "operation": "CONTAINER_RUN",
       "image": "cassandra:4.1",
-      "name": "flowk-cassandra",
       "detach": true,
       "remove_existing": true,
       "ports": [
@@ -22,6 +24,7 @@
     },
     {
       "id": "sleep.cassandra_boot",
+      "name": "sleep cassandra boot",
       "description": "Wait for Cassandra to accept connections.",
       "action": "DOCKER",
       "operation": "CONTAINER_EXEC",
@@ -34,6 +37,7 @@
     },
     {
       "id": "docker.cassandra.init_keyspaces",
+      "name": "docker cassandra init keyspaces",
       "description": "Create keyspaces and demo tables for the Cassandra flows.",
       "action": "DOCKER",
       "operation": "CONTAINER_EXEC",

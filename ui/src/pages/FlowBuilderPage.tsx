@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
@@ -6,7 +6,7 @@ import remarkGfm from 'remark-gfm';
 import { TaskDefinition } from '../types/flow';
 import { fetchFlowNotes } from '../api/client';
 import useFlowStore from '../state/flowStore';
-import FlowCanvas from '../components/flow/FlowCanvas';
+import FlowCanvas, { FlowCanvasHandle } from '../components/flow/FlowCanvas';
 import TaskInspector from '../components/flow/TaskInspector';
 import ExecutionTimeline from '../components/flow/ExecutionTimeline';
 import FlowControls from '../components/flow/FlowControls';
@@ -53,6 +53,7 @@ function FlowBuilderPage() {
   const openFlow = useFlowStore((state) => state.openFlow);
   const loadFlows = useFlowStore((state) => state.loadFlows);
   const connectToRunStream = useFlowStore((state) => state.connectToRunStream);
+  const flows = useFlowStore((state) => state.flows);
   const flowsCount = useFlowStore((state) => state.flows.length);
   const activeFlow = useFlowStore((state) => state.activeFlow);
   const triggerRun = useFlowStore((state) => state.triggerRun);
@@ -75,8 +76,25 @@ function FlowBuilderPage() {
   const [stopAtPending, setStopAtPending] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
   const [flowNotes, setFlowNotes] = useState<string | null>(null);
+  const [autoSaveLayout, setAutoSaveLayout] = useState(true);
+  const canvasRef = useRef<FlowCanvasHandle | null>(null);
   const { t } = useTranslation();
   const hasFlowNotes = flowNotes !== null;
+
+  const flowNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    flows.forEach((flow) => {
+      map.set(flow.id, flow.name ?? flow.id);
+      if (flow.flowNames) {
+        Object.entries(flow.flowNames).forEach(([id, name]) => {
+          if (!map.has(id)) {
+            map.set(id, name);
+          }
+        });
+      }
+    });
+    return map;
+  }, [flows]);
 
   const markdownComponents = useMemo(
     () => ({
@@ -261,6 +279,22 @@ function FlowBuilderPage() {
     }
   };
 
+  const handleToggleAutoSaveLayout = () => {
+    setAutoSaveLayout((value) => !value);
+  };
+
+  const handleSaveLayout = () => {
+    canvasRef.current?.saveLayout();
+  };
+
+  const handleResetLayout = () => {
+    const confirmReset = window.confirm(t('flowBuilder.resetLayoutConfirm'));
+    if (!confirmReset) {
+      return;
+    }
+    canvasRef.current?.resetLayout();
+  };
+
   const [panelWidth, setPanelWidth] = useState(380);
   const [isResizing, setIsResizing] = useState(false);
 
@@ -335,7 +369,7 @@ function FlowBuilderPage() {
     <div className="flow-builder-page">
       <header className="flow-builder-header">
         <div className="flow-builder-header__meta">
-          <h2>{activeFlow.id}</h2>
+          <h2>{activeFlow.name ?? activeFlow.id}</h2>
           <p className="flow-builder-header__description">{activeFlow.description}</p>
         </div>
         <div className="flow-builder-header__actions">
@@ -346,6 +380,10 @@ function FlowBuilderPage() {
               onRunTask={handleRunTask}
               onStop={handleStop}
               onResume={handleResume}
+              onSaveLayout={handleSaveLayout}
+              onResetLayout={handleResetLayout}
+              onToggleAutoSaveLayout={handleToggleAutoSaveLayout}
+              autoSaveLayout={autoSaveLayout}
               isFlowRunning={isFlowRunning}
               runPending={runPending}
               taskRunPending={taskRunPending}
@@ -369,12 +407,15 @@ function FlowBuilderPage() {
       >
         <section className="flow-builder-canvas">
           <FlowCanvas
+            ref={canvasRef}
             flow={activeFlow}
+            flowNameById={flowNameById}
             onTaskSelect={handleTaskSelect}
             selectedTaskId={selectedTask?.id}
             stopAtTaskId={stopAtTaskId}
             focusTaskId={focusTaskId}
             onTaskFocusHandled={() => requestTaskFocus(undefined)}
+            autoSaveLayout={autoSaveLayout}
           />
         </section>
 

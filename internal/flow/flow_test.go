@@ -133,7 +133,7 @@ func TestLoadDefinitionInitializesTaskStatus(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"load.status","description":"test","tasks":[{"id":"one","description":"sleep once","action":"SLEEP","seconds":1}]}`)
+	content := []byte(`{"description":"test","id":"load.status","name":"load.status","tasks":[{"action":"SLEEP","description":"sleep once","id":"one","name":"one","seconds":1}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -156,7 +156,7 @@ func TestLoadDefinitionSleepActionPayload(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"load.payload","description":"test","tasks":[{"id":"sleep","description":"sleep for two seconds","action":"SLEEP","seconds":2}]}`)
+	content := []byte(`{"description":"test","id":"load.payload","name":"load.payload","tasks":[{"action":"SLEEP","description":"sleep for two seconds","id":"sleep","name":"sleep","seconds":2}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -185,7 +185,7 @@ func TestLoadDefinitionPrintTaskAllowsEmptyDescription(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"print.no.description","description":"test","tasks":[{"id":"print","action":"PRINT","entries":[{"message":"hello"}]}]}`)
+	content := []byte(`{"description":"test","id":"print.no.description","name":"print.no.description","tasks":[{"action":"PRINT","entries":[{"message":"hello"}],"id":"print","name":"print"}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -208,7 +208,7 @@ func TestLoadDefinitionTaskAllowsEmptyDescription(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"sleep.no.description","description":"test","tasks":[{"id":"sleep","action":"SLEEP","seconds":1}]}`)
+	content := []byte(`{"description":"test","id":"sleep.no.description","name":"sleep.no.description","tasks":[{"action":"SLEEP","id":"sleep","name":"sleep","seconds":1}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -231,7 +231,7 @@ func TestLoadDefinitionRequiresID(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"missing.task.id","description":"test","tasks":[{"description":"missing id","action":"SLEEP","seconds":2}]}`)
+	content := []byte(`{"description":"test","id":"missing.task.id","name":"missing.task.id","tasks":[{"action":"SLEEP","description":"missing id","seconds":2}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -245,7 +245,7 @@ func TestLoadDefinitionRequiresAction(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"missing.task.action","description":"test","tasks":[{"id":"sleep","description":"missing action","seconds":2}]}`)
+	content := []byte(`{"description":"test","id":"missing.task.action","name":"missing.task.action","tasks":[{"description":"missing action","id":"sleep","name":"sleep","seconds":2}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -259,7 +259,7 @@ func TestLoadDefinitionRejectsDuplicateIDs(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"duplicate.task.ids","description":"test","tasks":[{"id":"dup","description":"first","action":"SLEEP","seconds":2},{"id":"dup","description":"second","action":"SLEEP","seconds":3}]}`)
+	content := []byte(`{"description":"test","id":"duplicate.task.ids","name":"duplicate.task.ids","tasks":[{"action":"SLEEP","description":"first","id":"dup","name":"dup","seconds":2},{"action":"SLEEP","description":"second","id":"dup","name":"dup","seconds":3}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -273,7 +273,7 @@ func TestLoadDefinitionUsesEmbeddedSchema(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"schema.missing","description":"test","tasks":[{"id":"sleep","description":"sleep task","action":"SLEEP","seconds":2}]}`)
+	content := []byte(`{"description":"test","id":"schema.missing","name":"schema.missing","tasks":[{"action":"SLEEP","description":"sleep task","id":"sleep","name":"sleep","seconds":2}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -286,7 +286,7 @@ func TestLoadDefinitionAllowsEmptyStringEvaluateRight(t *testing.T) {
 	setupSchemaProvider(t)
 	dir := t.TempDir()
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"evaluate.empty","description":"test","tasks":[{"id":"seed","action":"VARIABLES","scope":"flow","overwrite":true,"vars":[{"name":"sample","type":"string","value":""}]},{"id":"eval","action":"EVALUATE","if_conditions":[{"left":"${sample}","operation":"!=","right":""}],"then":{"continue":"ok"},"else":{"exit":"fail"}}]}`)
+	content := []byte(`{"description":"test","id":"evaluate.empty","name":"evaluate.empty","tasks":[{"action":"VARIABLES","id":"seed","name":"seed","overwrite":true,"scope":"flow","vars":[{"name":"sample","type":"string","value":""}]},{"action":"EVALUATE","else":{"exit":"fail"},"id":"eval","if_conditions":[{"left":"${sample}","operation":"!=","right":""}],"name":"eval","then":{"continue":"ok"}}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -306,13 +306,13 @@ func TestLoadDefinitionMergesImportedTasks(t *testing.T) {
 	}
 
 	importedPath := filepath.Join(importedDir, "imported.json")
-	importedContent := []byte(`{"id":"imported.flow","description":"imported","tasks":[{"id":"imported","description":"from import","action":"SLEEP","seconds":1}]}`)
+	importedContent := []byte(`{"description":"imported","id":"imported.flow","name":"imported.flow","tasks":[{"action":"SLEEP","description":"from import","id":"imported","name":"imported","seconds":1}]}`)
 	if err := os.WriteFile(importedPath, importedContent, 0o600); err != nil {
 		t.Fatalf("failed to write imported flow: %v", err)
 	}
 
 	rootPath := filepath.Join(dir, "flow.json")
-	rootContent := []byte(`{"id":"root.flow","description":"root","imports":["sub/imported.json"],"tasks":[{"id":"local","description":"local task","action":"SLEEP","seconds":1}]}`)
+	rootContent := []byte(`{"description":"root","id":"root.flow","imports":["sub/imported.json"],"name":"root.flow","tasks":[{"action":"SLEEP","description":"local task","id":"local","name":"local","seconds":1}]}`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("failed to write root flow: %v", err)
 	}
@@ -342,7 +342,7 @@ func TestLoadDefinitionValidatesOnErrorFlow(t *testing.T) {
 	dir := t.TempDir()
 
 	flowPath := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"onerror.missing","description":"test","on_error_flow":"missing.flow","tasks":[{"id":"main","description":"main task","action":"SLEEP","seconds":0.01}]}`)
+	content := []byte(`{"description":"test","id":"onerror.missing","name":"onerror.missing","on_error_flow":"missing.flow","tasks":[{"action":"SLEEP","description":"main task","id":"main","name":"main","seconds":0.01}]}`)
 	if err := os.WriteFile(flowPath, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow definition: %v", err)
 	}
@@ -359,7 +359,7 @@ func TestLoadDefinitionFailsForMissingImport(t *testing.T) {
 	dir := t.TempDir()
 
 	rootPath := filepath.Join(dir, "flow.json")
-	rootContent := []byte(`{"id":"missing.import","description":"root","imports":["missing.json"],"tasks":[{"id":"local","description":"local","action":"SLEEP","seconds":1}]}`)
+	rootContent := []byte(`{"description":"root","id":"missing.import","imports":["missing.json"],"name":"missing.import","tasks":[{"action":"SLEEP","description":"local","id":"local","name":"local","seconds":1}]}`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("failed to write root flow: %v", err)
 	}
@@ -374,13 +374,13 @@ func TestLoadDefinitionDetectsDuplicateIDsAcrossImports(t *testing.T) {
 	dir := t.TempDir()
 
 	importedPath := filepath.Join(dir, "imported.json")
-	importedContent := []byte(`{"id":"dup.flow.imported","description":"imported","tasks":[{"id":"dup","description":"duplicate","action":"SLEEP","seconds":1}]}`)
+	importedContent := []byte(`{"description":"imported","id":"dup.flow.imported","name":"dup.flow.imported","tasks":[{"action":"SLEEP","description":"duplicate","id":"dup","name":"dup","seconds":1}]}`)
 	if err := os.WriteFile(importedPath, importedContent, 0o600); err != nil {
 		t.Fatalf("failed to write imported flow: %v", err)
 	}
 
 	rootPath := filepath.Join(dir, "flow.json")
-	rootContent := []byte(`{"id":"dup.flow.root","description":"root","imports":["imported.json"],"tasks":[{"id":"dup","description":"local","action":"SLEEP","seconds":1}]}`)
+	rootContent := []byte(`{"description":"root","id":"dup.flow.root","imports":["imported.json"],"name":"dup.flow.root","tasks":[{"action":"SLEEP","description":"local","id":"dup","name":"dup","seconds":1}]}`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("failed to write root flow: %v", err)
 	}
@@ -395,13 +395,13 @@ func TestLoadDefinitionDetectsImportCycles(t *testing.T) {
 	dir := t.TempDir()
 
 	secondPath := filepath.Join(dir, "second.json")
-	secondContent := []byte(`{"id":"second.flow","description":"second","imports":["flow.json"],"tasks":[]}`)
+	secondContent := []byte(`{"description":"second","id":"second.flow","imports":["flow.json"],"name":"second.flow","tasks":[]}`)
 	if err := os.WriteFile(secondPath, secondContent, 0o600); err != nil {
 		t.Fatalf("failed to write second flow: %v", err)
 	}
 
 	rootPath := filepath.Join(dir, "flow.json")
-	rootContent := []byte(`{"id":"cycle.root","description":"root","imports":["second.json"],"tasks":[]}`)
+	rootContent := []byte(`{"description":"root","id":"cycle.root","imports":["second.json"],"name":"cycle.root","tasks":[]}`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("failed to write root flow: %v", err)
 	}
@@ -417,19 +417,19 @@ func FlowKsForExecutionIncludesTransitiveImports(t *testing.T) {
 	dir := t.TempDir()
 
 	nestedPath := filepath.Join(dir, "nested.json")
-	nestedContent := []byte(`{"id":"nested.flow","description":"nested","tasks":[]}`)
+	nestedContent := []byte(`{"description":"nested","id":"nested.flow","name":"nested.flow","tasks":[]}`)
 	if err := os.WriteFile(nestedPath, nestedContent, 0o600); err != nil {
 		t.Fatalf("failed to write nested flow: %v", err)
 	}
 
 	importedPath := filepath.Join(dir, "imported.json")
-	importedContent := []byte(`{"id":"imported.flow","description":"imported","imports":["nested.json"],"tasks":[]}`)
+	importedContent := []byte(`{"description":"imported","id":"imported.flow","imports":["nested.json"],"name":"imported.flow","tasks":[]}`)
 	if err := os.WriteFile(importedPath, importedContent, 0o600); err != nil {
 		t.Fatalf("failed to write imported flow: %v", err)
 	}
 
 	rootPath := filepath.Join(dir, "root.json")
-	rootContent := []byte(`{"id":"root.flow","description":"root","imports":["imported.json"],"tasks":[]}`)
+	rootContent := []byte(`{"description":"root","id":"root.flow","imports":["imported.json"],"name":"root.flow","tasks":[]}`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("failed to write root flow: %v", err)
 	}
@@ -459,7 +459,7 @@ func FlowKsForExecutionUnknownFlow(t *testing.T) {
 	dir := t.TempDir()
 
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"root.flow","description":"root","tasks":[]}`)
+	content := []byte(`{"description":"root","id":"root.flow","name":"root.flow","tasks":[]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow: %v", err)
 	}
@@ -479,7 +479,7 @@ func TestLoadDefinitionSupportsParallelAction(t *testing.T) {
 	dir := t.TempDir()
 
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"parallel.flow","description":"parallel","tasks":[{"id":"parallel","description":"parallel work","action":"PARALLEL","tasks":[{"id":"sleep","description":"sleep","action":"SLEEP","seconds":0.01}]}]}`)
+	content := []byte(`{"description":"parallel","id":"parallel.flow","name":"parallel.flow","tasks":[{"action":"PARALLEL","description":"parallel work","id":"parallel","name":"parallel","tasks":[{"action":"SLEEP","description":"sleep","id":"sleep","name":"sleep","seconds":0.01}]}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow: %v", err)
 	}
@@ -494,7 +494,7 @@ func TestLoadDefinitionParallelWithoutTasksIsAccepted(t *testing.T) {
 	dir := t.TempDir()
 
 	path := filepath.Join(dir, "flow.json")
-	content := []byte(`{"id":"parallel.invalid","description":"parallel","tasks":[{"id":"parallel","description":"missing tasks","action":"PARALLEL"}]}`)
+	content := []byte(`{"description":"parallel","id":"parallel.invalid","name":"parallel.invalid","tasks":[{"action":"PARALLEL","description":"missing tasks","id":"parallel","name":"parallel"}]}`)
 	if err := os.WriteFile(path, content, 0o600); err != nil {
 		t.Fatalf("failed to write flow: %v", err)
 	}

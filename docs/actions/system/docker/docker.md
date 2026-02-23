@@ -37,6 +37,7 @@ a container, and manage volumes or networks.
 ```json
 {
   "id": "docker-demo",
+  "name": "docker-demo",
   "description": "Basic Docker actions",
   "action": "DOCKER",
   "operation": "CONTAINER_RUN",
@@ -49,6 +50,7 @@ For interactive mode:
 ```json
 {
   "id": "docker-interactive",
+  "name": "docker-interactive",
   "description": "Enter Ubuntu",
   "action": "DOCKER",
   "operation": "CONTAINER_RUN",
@@ -64,6 +66,7 @@ With name, env vars, and ports:
 ```json
 {
   "id": "docker-run-flags",
+  "name": "docker-run-flags",
   "description": "Example with name, env, and ports",
   "action": "DOCKER",
   "operation": "CONTAINER_RUN",

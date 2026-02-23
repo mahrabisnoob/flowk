@@ -65,6 +65,10 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
         "connect": {
           "type": "object",
           "additionalProperties": false

@@ -25,6 +25,7 @@ const (
 // Definition contains the ordered list of actions that must be executed by the tool.
 type Definition struct {
 	ID          string `json:"id"`
+	Name        string `json:"name,omitempty"`
 	Description string `json:"description"`
 	// Imports expands referenced flow definitions before executing the current
 	// flow. Paths are resolved relative to the directory of the main flow
@@ -44,6 +45,9 @@ type Definition struct {
 	// FlowImports maps a flow identifier to the list of flow identifiers it imports.
 	// The map is populated when loading a definition and is not part of the JSON payload.
 	FlowImports map[string][]string `json:"-"`
+	// FlowNames maps a flow identifier to its human-friendly name.
+	// The map is populated when loading a definition and is not part of the JSON payload.
+	FlowNames map[string]string `json:"-"`
 }
 
 // TaskStatus identifies the lifecycle state of a task within a flow definition.
@@ -59,6 +63,7 @@ const (
 // Task represents a single operation within a flow definition.
 type Task struct {
 	ID              string          `json:"id"`
+	Name            string          `json:"name,omitempty"`
 	Description     string          `json:"description"`
 	Action          string          `json:"action"`
 	FlowID          string          `json:"-"`
@@ -76,6 +81,7 @@ type Task struct {
 func (t *Task) UnmarshalJSON(data []byte) error {
 	type alias struct {
 		ID          string `json:"id"`
+		Name        string `json:"name"`
 		Description string `json:"description"`
 		Action      string `json:"action"`
 	}
@@ -86,6 +92,7 @@ func (t *Task) UnmarshalJSON(data []byte) error {
 	}
 
 	t.ID = a.ID
+	t.Name = a.Name
 	t.Description = a.Description
 	t.Action = a.Action
 	t.Payload = append(t.Payload[:0], data...)
@@ -151,6 +158,16 @@ func loadDefinitionRecursive(path, baseDir string, visiting map[string]struct{},
 	if _, exists := def.FlowImports[def.ID]; !exists {
 		def.FlowImports[def.ID] = nil
 	}
+	if def.FlowNames == nil {
+		def.FlowNames = make(map[string]string)
+	}
+	if _, exists := def.FlowNames[def.ID]; !exists {
+		name := strings.TrimSpace(def.Name)
+		if name == "" {
+			name = def.ID
+		}
+		def.FlowNames[def.ID] = name
+	}
 
 	for i := range def.Tasks {
 		def.Tasks[i].FlowID = def.ID
@@ -197,6 +214,7 @@ func loadDefinitionRecursive(path, baseDir string, visiting map[string]struct{},
 		}
 		def.FlowImports[def.ID] = append(def.FlowImports[def.ID], importedDef.ID)
 		mergeFlowImports(def.FlowImports, importedDef.FlowImports)
+		mergeFlowNames(def.FlowNames, importedDef.FlowNames)
 	}
 
 	combined = append(combined, def.Tasks...)
@@ -226,6 +244,19 @@ func mergeFlowImports(dst map[string][]string, src map[string][]string) {
 		}
 
 		dst[flowID] = copied
+	}
+}
+
+func mergeFlowNames(dst map[string]string, src map[string]string) {
+	if len(src) == 0 {
+		return
+	}
+
+	for flowID, name := range src {
+		if _, exists := dst[flowID]; exists {
+			continue
+		}
+		dst[flowID] = name
 	}
 }
 

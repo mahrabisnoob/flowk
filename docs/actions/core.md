@@ -25,6 +25,7 @@ Prints messages to the console or UI logs. Combining static text with variable v
 ```json
 {
   "id": "log_output",
+  "name": "log_output",
   "action": "PRINT",
   "entries": [
     { "message": "Processing complete for user: " },
@@ -63,6 +64,7 @@ Defines or updates variables in the flow's context.
 ```json
 {
   "id": "init_vars",
+  "name": "init_vars",
   "action": "VARIABLES",
   "vars": [
     { "name": "count", "type": "number", "value": 0 },
@@ -87,6 +89,7 @@ Pauses the execution for a specified amount of time.
 ```json
 {
   "id": "wait_for_service",
+  "name": "wait_for_service",
   "action": "SLEEP",
   "seconds": 5.5
 }
@@ -117,6 +120,7 @@ Conditionally executes logic within a task (often used as a logic gate or branch
 ```json
 {
   "id": "check_status",
+  "name": "check_status",
   "action": "EVALUATE",
   "if_conditions": [
     { "left": "${http_status}", "operation": "=", "right": 200 }
@@ -144,10 +148,11 @@ Executes a list of child tasks concurrently.
 ```json
 {
   "id": "run_checks",
+  "name": "run_checks",
   "action": "PARALLEL",
   "tasks": [
-    { "id": "check_a", "action": "HTTP_REQUEST", ... },
-    { "id": "check_b", "action": "HTTP_REQUEST", ... }
+    { "id": "check_a", "name": "check_a", "action": "HTTP_REQUEST", ... },
+    { "id": "check_b", "name": "check_b", "action": "HTTP_REQUEST", ... }
   ]
 }
 ```
@@ -173,6 +178,7 @@ Iterates over a range of numbers or a list.
 ```json
 {
   "id": "process_files",
+  "name": "process_files",
   "action": "FOR",
   "variable": "filename",
   "values": ["file1.txt", "file2.txt"],

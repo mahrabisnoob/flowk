@@ -1,5 +1,6 @@
 {
   "id": "post_deploy_checks",
+  "name": "post deploy checks",
   "description": "Post deploy checks subflow. This subflow simulates running post-deployment checks, like an HTTP health check.",
   "imports": [
     "./subflows/docker_http_mock_health.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "post_deploy_health_check",
+      "name": "post deploy health check",
       "action": "HTTP_REQUEST",
       "protocol": "HTTP",
       "url": "http://127.0.0.1:8094/health",
@@ -14,6 +16,7 @@
     },
     {
       "id": "post_deploy_print_health_check",
+      "name": "post deploy print health check",
       "action": "PRINT",
       "entries": [
         {

@@ -1,5 +1,6 @@
 {
   "id": "demo_complex_flow",
+  "name": "demo complex flow",
   "description": "Complex demo that combines HTTP assertions, Dockerized MySQL persistence, and shell-based PGP encryption via subflows.",
   "imports": [
     "./subflows/demo_musicbrainz_artist_asserts.json",
@@ -9,6 +10,7 @@
   "tasks": [
     {
       "id": "demo.compose_report",
+      "name": "demo compose report",
       "description": "Combine outputs from the imported subflows into a single report object.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -40,6 +42,7 @@
     },
     {
       "id": "demo.print_report",
+      "name": "demo print report",
       "description": "Print the consolidated report to highlight the combined demo capabilities.",
       "action": "PRINT",
       "entries": [

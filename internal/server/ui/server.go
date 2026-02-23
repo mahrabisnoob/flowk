@@ -34,6 +34,7 @@ type Config struct {
 	StaticDir     string
 	Runner        *FlowRunner
 	FlowUploadDir string
+	ConfigPath    string
 }
 
 type Server struct {
@@ -46,6 +47,7 @@ type Server struct {
 	uploadedFlowName string
 	uploadDir        string
 	fsRoot           string
+	layoutDir        string
 	importCache      map[string]string
 	importCacheMu    sync.RWMutex
 }
@@ -81,6 +83,7 @@ func NewServer(cfg Config) (*Server, error) {
 		fsRoot:      workingDir,
 		importCache: make(map[string]string),
 	}
+	srv.layoutDir = resolveLayoutDir(cfg.ConfigPath)
 	srv.setActiveFlowPath(strings.TrimSpace(cfg.FlowPath), false, "")
 	srv.registerRoutes()
 
@@ -98,6 +101,9 @@ func (s *Server) registerRoutes() {
 	s.engine.POST("/api/run/stop", s.handleStop)
 	s.engine.POST("/api/run/stop-at", s.handleStopAtTask)
 	s.engine.POST("/api/ui/close-flow", s.handleCloseFlow)
+	s.engine.GET("/api/ui/layout", s.handleGetLayout)
+	s.engine.POST("/api/ui/layout", s.handleSaveLayout)
+	s.engine.DELETE("/api/ui/layout", s.handleDeleteLayout)
 
 	if handler := s.staticFileHandler(); handler != nil {
 		s.engine.NoRoute(handler)
@@ -214,7 +220,7 @@ func (s *Server) handleFlow(c *gin.Context) {
 func (s *Server) handleFlowNotes(c *gin.Context) {
 	flowPath := s.activeFlowPath()
 	if strings.TrimSpace(flowPath) == "" {
-		c.JSON(http.StatusNotFound, gin.H{"error": "no hay ningún flujo cargado"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no flow is currently loaded"})
 		return
 	}
 
@@ -228,13 +234,13 @@ func (s *Server) handleFlowNotes(c *gin.Context) {
 		if s.tryNotesFromUploadedName(c) {
 			return
 		}
-		c.JSON(http.StatusNotFound, gin.H{"error": "no hay notas disponibles"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no notes are available"})
 		return
 	}
 
 	activeDef, err := flow.LoadDefinition(flowPath)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "no hay notas disponibles"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no notes are available"})
 		return
 	}
 
@@ -243,7 +249,7 @@ func (s *Server) handleFlowNotes(c *gin.Context) {
 		if s.tryNotesFromUploadedName(c) {
 			return
 		}
-		c.JSON(http.StatusNotFound, gin.H{"error": "no hay notas disponibles"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no notes are available"})
 		return
 	}
 
@@ -252,7 +258,7 @@ func (s *Server) handleFlowNotes(c *gin.Context) {
 		if s.tryNotesFromUploadedName(c) {
 			return
 		}
-		c.JSON(http.StatusNotFound, gin.H{"error": "no hay notas disponibles"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "no notes are available"})
 		return
 	}
 }
@@ -377,7 +383,7 @@ func (s *Server) handleRun(c *gin.Context) {
 	var req runRequest
 	var opts *RunOptions
 	if err := c.ShouldBindJSON(&req); err != nil && !errors.Is(err, io.EOF) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("payload inválido: %v", err)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("invalid payload: %v", err)})
 		return
 	} else if err == nil {
 		candidate := RunOptions{
@@ -399,23 +405,23 @@ func (s *Server) handleRun(c *gin.Context) {
 			return
 		}
 		if errors.Is(err, ErrNoRunState) {
-			c.JSON(http.StatusConflict, gin.H{"error": "no hay estado de ejecución previo para reanudar"})
+			c.JSON(http.StatusConflict, gin.H{"error": "no previous run state is available to resume"})
 			return
 		}
 		if errors.Is(err, ErrResumeConflict) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "la solicitud de reanudación no puede combinarse con otras opciones"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "resume request cannot be combined with other options"})
 			return
 		}
 		if errors.Is(err, ErrResumeTaskNotFound) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "el task solicitado no fue ejecutado previamente"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "the requested task was not executed previously"})
 			return
 		}
 		if errors.Is(err, ErrResumeTaskNotCompleted) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "el task solicitado aún no ha finalizado"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "the requested task has not finished yet"})
 			return
 		}
 		if errors.Is(err, ErrFlowPathRequired) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "aún no hay un flujo listo para ejecutar"})
+			c.JSON(http.StatusBadRequest, gin.H{"error": "no flow is ready to run yet"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -433,7 +439,7 @@ func (s *Server) handleStop(c *gin.Context) {
 
 	if err := s.runner.RequestStop(); err != nil {
 		if errors.Is(err, ErrNoRunInProgress) {
-			c.JSON(http.StatusConflict, gin.H{"error": "no hay una ejecución activa"})
+			c.JSON(http.StatusConflict, gin.H{"error": "no execution is currently in progress"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -455,7 +461,7 @@ func (s *Server) handleStopAtTask(c *gin.Context) {
 
 	var req stopAtRequest
 	if err := c.ShouldBindJSON(&req); err != nil && !errors.Is(err, io.EOF) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("payload inválido: %v", err)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("invalid payload: %v", err)})
 		return
 	}
 
@@ -503,12 +509,12 @@ func (s *Server) handleCloseFlow(c *gin.Context) {
 func (s *Server) handleImportFlow(c *gin.Context) {
 	payload, err := io.ReadAll(io.LimitReader(c.Request.Body, maxFlowUploadSize))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("no se pudo leer el flujo: %v", err)})
+		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("could not read flow: %v", err)})
 		return
 	}
 
 	if len(bytes.TrimSpace(payload)) == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "el archivo del flujo está vacío"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "flow file is empty"})
 		return
 	}
 
@@ -582,27 +588,27 @@ func (s *Server) setActiveFlowPath(path string, fromUpload bool, uploadName stri
 
 func (s *Server) storeFlowDefinition(data []byte) (string, *flow.Definition, error) {
 	if len(data) == 0 {
-		return "", nil, errors.New("el archivo del flujo está vacío")
+		return "", nil, errors.New("flow file is empty")
 	}
 
 	if err := os.MkdirAll(s.uploadDir, 0o755); err != nil {
-		return "", nil, fmt.Errorf("no se pudo preparar el directorio de cargas: %w", err)
+		return "", nil, fmt.Errorf("could not prepare flow upload directory: %w", err)
 	}
 
 	file, err := os.CreateTemp(s.uploadDir, "flow-*.json")
 	if err != nil {
-		return "", nil, fmt.Errorf("no se pudo almacenar el flujo: %w", err)
+		return "", nil, fmt.Errorf("could not store flow: %w", err)
 	}
 	name := file.Name()
 
 	if _, err := file.Write(data); err != nil {
 		file.Close()
 		_ = os.Remove(name)
-		return "", nil, fmt.Errorf("no se pudo almacenar el flujo: %w", err)
+		return "", nil, fmt.Errorf("could not store flow: %w", err)
 	}
 	if err := file.Close(); err != nil {
 		_ = os.Remove(name)
-		return "", nil, fmt.Errorf("no se pudo almacenar el flujo: %w", err)
+		return "", nil, fmt.Errorf("could not store flow: %w", err)
 	}
 
 	if err := s.populateUploadedImports(name, data); err != nil {
@@ -622,13 +628,13 @@ func (s *Server) storeFlowDefinition(data []byte) (string, *flow.Definition, err
 func (s *Server) populateUploadedImports(rootPath string, data []byte) error {
 	var raw map[string]json.RawMessage
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return fmt.Errorf("no se pudo analizar el flujo importado: %w", err)
+		return fmt.Errorf("could not parse imported flow: %w", err)
 	}
 
 	var imports []string
 	if rawImports, ok := raw["imports"]; ok {
 		if err := json.Unmarshal(rawImports, &imports); err != nil {
-			return fmt.Errorf("no se pudo analizar el flujo importado: %w", err)
+			return fmt.Errorf("could not parse imported flow: %w", err)
 		}
 	}
 	if len(imports) == 0 {
@@ -652,15 +658,15 @@ func (s *Server) populateUploadedImports(rootPath string, data []byte) error {
 	if updated {
 		rawImports, err := json.Marshal(imports)
 		if err != nil {
-			return fmt.Errorf("no se pudo actualizar el flujo importado: %w", err)
+			return fmt.Errorf("could not update imported flow: %w", err)
 		}
 		raw["imports"] = rawImports
 		updatedData, err := json.Marshal(raw)
 		if err != nil {
-			return fmt.Errorf("no se pudo actualizar el flujo importado: %w", err)
+			return fmt.Errorf("could not update imported flow: %w", err)
 		}
 		if err := os.WriteFile(rootPath, updatedData, 0o600); err != nil {
-			return fmt.Errorf("no se pudo actualizar el flujo importado: %w", err)
+			return fmt.Errorf("could not update imported flow: %w", err)
 		}
 	}
 
@@ -700,7 +706,7 @@ func (s *Server) copyImportRelative(relPath, parentSrcDir, parentDestDir, rootDe
 	original := relPath
 	trimmed := strings.TrimSpace(relPath)
 	if trimmed == "" {
-		return "", errors.New("la ruta de importaciA3n no puede estar vacA-a")
+		return "", errors.New("import path cannot be empty")
 	}
 
 	cleanRel := filepath.Clean(trimmed)
@@ -725,11 +731,11 @@ func (s *Server) copyImportRelative(relPath, parentSrcDir, parentDestDir, rootDe
 			}
 			relToParent, err := filepath.Rel(parentDestDir, destPath)
 			if err != nil {
-				return "", fmt.Errorf("no se pudo preparar el import %q: %w", destPath, err)
+				return "", fmt.Errorf("could not prepare import %q: %w", destPath, err)
 			}
 			updatedPath = filepath.ToSlash(relToParent)
 		} else {
-			return "", fmt.Errorf("la ruta de importaciA3n %q se encuentra fuera del directorio permitido", cleanRel)
+			return "", fmt.Errorf("import path %q is outside the allowed directory", cleanRel)
 		}
 	} else {
 		candidate := filepath.Join(parentDestDir, filepath.FromSlash(cleanRel))
@@ -746,7 +752,7 @@ func (s *Server) copyImportRelative(relPath, parentSrcDir, parentDestDir, rootDe
 			}
 			relToParent, err := filepath.Rel(parentDestDir, destPath)
 			if err != nil {
-				return "", fmt.Errorf("no se pudo preparar el import %q: %w", destPath, err)
+				return "", fmt.Errorf("could not prepare import %q: %w", destPath, err)
 			}
 			updatedPath = filepath.ToSlash(relToParent)
 		}
@@ -766,7 +772,7 @@ func (s *Server) copyFlowFileRecursive(srcPath, destPath, rootDest string, visit
 
 	absDest, err := filepath.Abs(destPath)
 	if err != nil {
-		return fmt.Errorf("no se pudo preparar el import %q: %w", destPath, err)
+		return fmt.Errorf("could not prepare import %q: %w", destPath, err)
 	}
 
 	if visited != nil {
@@ -778,18 +784,18 @@ func (s *Server) copyFlowFileRecursive(srcPath, destPath, rootDest string, visit
 
 	data, err := os.ReadFile(srcPath)
 	if err != nil {
-		return fmt.Errorf("no se pudo leer el import %q: %w", srcPath, err)
+		return fmt.Errorf("could not read import %q: %w", srcPath, err)
 	}
 
 	var raw map[string]json.RawMessage
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return fmt.Errorf("no se pudo analizar el import %q: %w", srcPath, err)
+		return fmt.Errorf("could not parse import %q: %w", srcPath, err)
 	}
 
 	var imports []string
 	if rawImports, ok := raw["imports"]; ok {
 		if err := json.Unmarshal(rawImports, &imports); err != nil {
-			return fmt.Errorf("no se pudo analizar el import %q: %w", srcPath, err)
+			return fmt.Errorf("could not parse import %q: %w", srcPath, err)
 		}
 	}
 
@@ -810,20 +816,20 @@ func (s *Server) copyFlowFileRecursive(srcPath, destPath, rootDest string, visit
 	if updated {
 		rawImports, err := json.Marshal(imports)
 		if err != nil {
-			return fmt.Errorf("no se pudo preparar el import %q: %w", destPath, err)
+			return fmt.Errorf("could not prepare import %q: %w", destPath, err)
 		}
 		raw["imports"] = rawImports
 		data, err = json.Marshal(raw)
 		if err != nil {
-			return fmt.Errorf("no se pudo preparar el import %q: %w", destPath, err)
+			return fmt.Errorf("could not prepare import %q: %w", destPath, err)
 		}
 	}
 
 	if err := os.MkdirAll(filepath.Dir(destPath), 0o755); err != nil {
-		return fmt.Errorf("no se pudo preparar el import %q: %w", destPath, err)
+		return fmt.Errorf("could not prepare import %q: %w", destPath, err)
 	}
 	if err := os.WriteFile(destPath, data, 0o600); err != nil {
-		return fmt.Errorf("no se pudo copiar el import %q: %w", destPath, err)
+		return fmt.Errorf("could not copy import %q: %w", destPath, err)
 	}
 
 	return nil
@@ -835,7 +841,7 @@ func (s *Server) resolveImportSource(relPath, parentSrcDir string) (string, erro
 		if info, err := os.Stat(normalized); err == nil && !info.IsDir() {
 			return normalized, nil
 		}
-		return "", fmt.Errorf("no se encontrA3 el archivo requerido %q", normalized)
+		return "", fmt.Errorf("required file %q was not found", normalized)
 	}
 
 	if parentSrcDir != "" {
@@ -907,7 +913,7 @@ func (s *Server) locateImportSource(relPath string) (string, error) {
 		}
 	}
 
-	return "", fmt.Errorf("no se encontrA3 el archivo requerido %q", key)
+	return "", fmt.Errorf("required file %q was not found", key)
 }
 
 func stripLeadingRelativePath(path string) string {
@@ -943,7 +949,7 @@ func (s *Server) searchImportBySuffix(key string) (string, error) {
 		roots = append(roots, filepath.Dir(trimmed))
 	}
 	if len(roots) == 0 {
-		return "", fmt.Errorf("no hay un directorio base configurado para buscar imports")
+		return "", fmt.Errorf("no base directory is configured to search imports")
 	}
 
 	seen := make(map[string]struct{}, len(roots))
@@ -966,7 +972,7 @@ func (s *Server) searchImportBySuffix(key string) (string, error) {
 		return "", err
 	}
 
-	return "", fmt.Errorf("no se encontrA3 el archivo requerido %q", key)
+	return "", fmt.Errorf("required file %q was not found", key)
 }
 
 func searchImportBySuffixInRoot(root, key string) (string, error) {
@@ -989,7 +995,7 @@ func searchImportBySuffixInRoot(root, key string) (string, error) {
 		return nil
 	})
 	if err != nil && !errors.Is(err, errImportLocated) {
-		return "", fmt.Errorf("no se pudo localizar el import %q: %w", key, err)
+		return "", fmt.Errorf("could not locate import %q: %w", key, err)
 	}
 	if match == "" {
 		return "", errImportNotFound
@@ -1012,31 +1018,34 @@ func (s *Server) storeImportCache(key, value string) {
 func ensureWithinRoot(root, target string) error {
 	rootAbs, err := filepath.Abs(root)
 	if err != nil {
-		return fmt.Errorf("no se pudo validar la ruta del import: %w", err)
+		return fmt.Errorf("could not validate import path: %w", err)
 	}
 	targetAbs, err := filepath.Abs(target)
 	if err != nil {
-		return fmt.Errorf("no se pudo validar la ruta del import: %w", err)
+		return fmt.Errorf("could not validate import path: %w", err)
 	}
 	rel, err := filepath.Rel(rootAbs, targetAbs)
 	if err != nil {
-		return fmt.Errorf("no se pudo validar la ruta del import: %w", err)
+		return fmt.Errorf("could not validate import path: %w", err)
 	}
 	if strings.HasPrefix(rel, "..") {
-		return fmt.Errorf("la ruta de importaciA3n %q se encuentra fuera del directorio permitido", target)
+		return fmt.Errorf("import path %q is outside the allowed directory", target)
 	}
 	return nil
 }
 
 type FlowResponse struct {
 	ID          string        `json:"id"`
+	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	Imports     []string      `json:"imports,omitempty"`
+	FlowNames   map[string]string `json:"flowNames,omitempty"`
 	Tasks       []TaskSummary `json:"tasks"`
 }
 
 type TaskSummary struct {
 	ID              string          `json:"id"`
+	Name            string          `json:"name"`
 	Description     string          `json:"description"`
 	Action          string          `json:"action"`
 	FlowID          string          `json:"flowId"`
@@ -1057,8 +1066,18 @@ func buildFlowResponse(def *flow.Definition) FlowResponse {
 
 	response := FlowResponse{
 		ID:          def.ID,
+		Name:        def.Name,
 		Description: def.Description,
 		Imports:     append([]string(nil), def.Imports...),
+	}
+	if strings.TrimSpace(response.Name) == "" {
+		response.Name = response.ID
+	}
+	if len(def.FlowNames) > 0 {
+		response.FlowNames = make(map[string]string, len(def.FlowNames))
+		for key, value := range def.FlowNames {
+			response.FlowNames[key] = value
+		}
 	}
 
 	for _, task := range def.Tasks {
@@ -1071,6 +1090,7 @@ func buildFlowResponse(def *flow.Definition) FlowResponse {
 func buildTaskSummary(task flow.Task) TaskSummary {
 	summary := TaskSummary{
 		ID:              task.ID,
+		Name:            task.Name,
 		Description:     task.Description,
 		Action:          task.Action,
 		FlowID:          task.FlowID,
@@ -1078,6 +1098,9 @@ func buildTaskSummary(task flow.Task) TaskSummary {
 		Success:         task.Success,
 		DurationSeconds: task.DurationSeconds,
 		ResultType:      task.ResultType,
+	}
+	if strings.TrimSpace(summary.Name) == "" {
+		summary.Name = summary.ID
 	}
 
 	if !task.StartTimestamp.IsZero() {

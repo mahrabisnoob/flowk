@@ -23,6 +23,7 @@ Sends Gmail messages using an OAuth2 access token.
 ```json
 {
   "id": "gmail_send",
+  "name": "gmail_send",
   "action": "GMAIL",
   "operation": "SEND_MESSAGE",
   "access_token": "${gmail_access_token}",
@@ -63,6 +64,7 @@ Generates OAuth authorization URLs and performs token endpoint operations (`auth
 ```json
 {
   "id": "oauth2_authorize",
+  "name": "oauth2_authorize",
   "action": "OAUTH2",
   "operation": "AUTHORIZE_URL",
   "auth_url": "https://accounts.google.com/o/oauth2/v2/auth",

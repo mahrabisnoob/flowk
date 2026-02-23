@@ -102,6 +102,7 @@ function ExecutionTimeline({ flow }: ExecutionTimelineProps) {
               ? task.status
               : t('timeline.statusFallback');
           const statusTone = getStatusTone(task, statusLabel);
+          const displayName = task.name ?? task.id;
           const timeParts = [];
           if (task.startedAt) {
             timeParts.push(`${t('timeline.startLabel')}: ${task.startedAt}`);
@@ -123,7 +124,7 @@ function ExecutionTimeline({ flow }: ExecutionTimelineProps) {
                     <span className="execution-timeline__name">
                       {typeof task.description === 'string' && task.description.trim()
                         ? task.description
-                        : task.id}
+                        : displayName}
                     </span>
                     <span className={`execution-timeline__status execution-timeline__status--${statusTone}`}>
                       {statusLabel}

@@ -21,6 +21,7 @@ Supported operations:
 ```json
 {
   "id": "gmail_send_message",
+  "name": "gmail_send_message",
   "action": "GMAIL",
   "operation": "SEND_MESSAGE",
   "access_token": "${gmail_access_token}",
@@ -34,10 +35,12 @@ Supported operations:
 ```json
 {
   "id": "gmail_send_message_demo",
+  "name": "gmail_send_message_demo",
   "description": "Refresh token and send Gmail message",
   "tasks": [
     {
       "id": "refresh_access_token",
+      "name": "refresh_access_token",
       "action": "OAUTH2",
       "operation": "REFRESH_TOKEN",
       "token_url": "https://oauth2.googleapis.com/token",
@@ -47,6 +50,7 @@ Supported operations:
     },
     {
       "id": "send_message",
+      "name": "send_message",
       "action": "GMAIL",
       "operation": "SEND_MESSAGE",
       "access_token": "${from.task:refresh_access_token.result$.response.body.access_token}",

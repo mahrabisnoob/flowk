@@ -1675,7 +1675,7 @@ textarea.task-inspector__control {
   width: 100%;
   height: 100%;
   position: relative;
-  pointer-events: none;
+  pointer-events: auto;
   border: 2px dashed var(--slate-300);
   background: rgba(241, 245, 249, 0.5);
   border-radius: var(--radius-xl);
@@ -1699,6 +1699,12 @@ textarea.task-inspector__control {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-radius: var(--radius-sm);
+  cursor: grab;
+  pointer-events: auto;
+}
+
+.subflow-group__label:active {
+  cursor: grabbing;
 }
 
 /* --- FOR Loop Group --- */
@@ -1707,11 +1713,12 @@ textarea.task-inspector__control {
   width: 100%;
   height: 100%;
   position: relative;
-  pointer-events: none;
+  pointer-events: auto;
   border: 2px dashed #f59e0b;
   background: rgba(254, 243, 199, 0.3);
   border-radius: var(--radius-xl);
   transition: all 0.2s;
+  cursor: grab;
 }
 
 .react-flow__node.selected .for-loop-group {
@@ -1730,6 +1737,11 @@ textarea.task-inspector__control {
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-md);
   border: 1px solid #fbbf24;
+  cursor: grab;
+}
+
+.for-loop-group__header:active {
+  cursor: grabbing;
 }
 
 .for-loop-group__label {
@@ -1755,11 +1767,12 @@ textarea.task-inspector__control {
   width: 100%;
   height: 100%;
   position: relative;
-  pointer-events: none;
+  pointer-events: auto;
   border: 2px dashed #06b6d4;
   background: rgba(207, 250, 254, 0.3);
   border-radius: var(--radius-xl);
   transition: all 0.2s;
+  cursor: grab;
 }
 
 .react-flow__node.selected .parallel-group {
@@ -1778,6 +1791,11 @@ textarea.task-inspector__control {
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-md);
   border: 1px solid #22d3ee;
+  cursor: grab;
+}
+
+.parallel-group__header:active {
+  cursor: grabbing;
 }
 
 .parallel-group__label {
@@ -2124,4 +2142,34 @@ textarea.task-inspector__control {
   background: #fecaca;
   color: #991b1b;
   transform: scale(1.05);
+}
+
+.flow-controls__button--reset {
+  color: #b91c1c;
+}
+
+.flow-controls__button--reset:not(:disabled):hover {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.flow-controls__button--toggle[data-active='true'] {
+  background: #dcfce7;
+  color: #166534;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+}
+
+.flow-controls__button--toggle[data-active='true']:not(:disabled):hover {
+  background: #bbf7d0;
+  color: #15803d;
+}
+
+.flow-controls__button--toggle[data-active='false'] {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.flow-controls__button--toggle[data-active='false']:not(:disabled):hover {
+  background: #cbd5e1;
+  color: #334155;
 }

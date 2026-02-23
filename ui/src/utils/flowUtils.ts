@@ -74,6 +74,10 @@ export const extractParallelChildren = (task: TaskDefinition): TaskDefinition[] 
                 typeof raw.action === 'string' && raw.action.trim().length > 0
                     ? raw.action
                     : 'TASK';
+            const name =
+                typeof raw.name === 'string' && raw.name.trim().length > 0
+                    ? raw.name
+                    : id;
             const description =
                 typeof raw.description === 'string' && raw.description.trim().length > 0
                     ? raw.description
@@ -89,6 +93,7 @@ export const extractParallelChildren = (task: TaskDefinition): TaskDefinition[] 
             const normalizedTask: TaskDefinition = {
                 ...normalized,
                 id,
+                name,
                 action,
                 description
             };
@@ -122,6 +127,10 @@ export const extractForChildren = (task: TaskDefinition): TaskDefinition[] => {
                 typeof raw.action === 'string' && raw.action.trim().length > 0
                     ? raw.action
                     : 'TASK';
+            const name =
+                typeof raw.name === 'string' && raw.name.trim().length > 0
+                    ? raw.name
+                    : id;
             const description =
                 typeof raw.description === 'string' && raw.description.trim().length > 0
                     ? raw.description
@@ -137,6 +146,7 @@ export const extractForChildren = (task: TaskDefinition): TaskDefinition[] => {
             const normalizedTask: TaskDefinition = {
                 ...normalized,
                 id,
+                name,
                 action,
                 description
             };

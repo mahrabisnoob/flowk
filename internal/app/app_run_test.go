@@ -80,30 +80,35 @@ func TestTaskDescriptionsExpandVariables(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "description.expansion",
-                "description": "Expand task descriptions",
-                "tasks": [
+                  "description": "Expand task descriptions",
+                  "id": "description.expansion",
+                  "name": "description.expansion",
+                  "tasks": [
+                    {
+                      "action": "FOR",
+                      "description": "Iterate over key names",
+                      "id": "loop",
+                      "name": "loop",
+                      "tasks": [
                         {
-                                "id": "loop",
-                                "description": "Iterate over key names",
-                                "action": "FOR",
-                                "variable": "key_name",
-                                "values": [
-                                        "VALUE1"
-                                ],
-                                "tasks": [
-                                        {
-                                                "id": "export_key",
-                                                "description": "Export key ${key_name}",
-                                                "action": "PRINT",
-                                                "entries": [
-                                                        {"message": "Key ${key_name}"}
-                                                ]
-                                        }
-                                ]
+                          "action": "PRINT",
+                          "description": "Export key ${key_name}",
+                          "entries": [
+                            {
+                              "message": "Key ${key_name}"
+                            }
+                          ],
+                          "id": "export_key",
+                          "name": "export_key"
                         }
-                ]
-        }`)
+                      ],
+                      "values": [
+                        "VALUE1"
+                      ],
+                      "variable": "key_name"
+                    }
+                  ]
+                }`)
 
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
@@ -143,17 +148,79 @@ func TestRunEvaluateBranchActions(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "evaluate.branch.actions",
-                "description": "evaluate branch actions",
-                "tasks": [
-                        {"id":"sleep1","description":"Initial sleep","action":"SLEEP","seconds":0.01},
-                        {"id":"eval_then","description":"Evaluate success continue","action":"EVALUATE","if_conditions":[{"field":"${from.task:sleep1.success}","operation":"=","expected":true}],"then":{"continue":"All keys ACTIVE"},"else":{"continue":""}},
-                        {"id":"sleep2","description":"Second sleep","action":"SLEEP","seconds":0.01},
-                        {"id":"eval_else","description":"Evaluate failure branch","action":"EVALUATE","if_conditions":[{"field":"${from.task:sleep1.success}","operation":"=","expected":false}],"then":{"continue":""},"else":{"sleep":0.01,"gototask":"sleep4"}},
-                        {"id":"sleep3","description":"Skipped sleep","action":"SLEEP","seconds":0.01},
-                        {"id":"sleep4","description":"Final sleep","action":"SLEEP","seconds":0.01}
-                ]
-        }`)
+                  "description": "evaluate branch actions",
+                  "id": "evaluate.branch.actions",
+                  "name": "evaluate.branch.actions",
+                  "tasks": [
+                    {
+                      "action": "SLEEP",
+                      "description": "Initial sleep",
+                      "id": "sleep1",
+                      "name": "sleep1",
+                      "seconds": 0.01
+                    },
+                    {
+                      "action": "EVALUATE",
+                      "description": "Evaluate success continue",
+                      "else": {
+                        "continue": ""
+                      },
+                      "id": "eval_then",
+                      "if_conditions": [
+                        {
+                          "expected": true,
+                          "field": "${from.task:sleep1.success}",
+                          "operation": "="
+                        }
+                      ],
+                      "name": "eval_then",
+                      "then": {
+                        "continue": "All keys ACTIVE"
+                      }
+                    },
+                    {
+                      "action": "SLEEP",
+                      "description": "Second sleep",
+                      "id": "sleep2",
+                      "name": "sleep2",
+                      "seconds": 0.01
+                    },
+                    {
+                      "action": "EVALUATE",
+                      "description": "Evaluate failure branch",
+                      "else": {
+                        "gototask": "sleep4",
+                        "sleep": 0.01
+                      },
+                      "id": "eval_else",
+                      "if_conditions": [
+                        {
+                          "expected": false,
+                          "field": "${from.task:sleep1.success}",
+                          "operation": "="
+                        }
+                      ],
+                      "name": "eval_else",
+                      "then": {
+                        "continue": ""
+                      }
+                    },
+                    {
+                      "action": "SLEEP",
+                      "description": "Skipped sleep",
+                      "id": "sleep3",
+                      "name": "sleep3",
+                      "seconds": 0.01
+                    },
+                    {
+                      "action": "SLEEP",
+                      "description": "Final sleep",
+                      "id": "sleep4",
+                      "name": "sleep4",
+                      "seconds": 0.01
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -189,14 +256,45 @@ func TestRunEvaluateExitStopsFlow(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "evaluate.exit.action",
-                "description": "evaluate exit action",
-                "tasks": [
-                        {"id":"sleep1","description":"Initial sleep","action":"SLEEP","seconds":0.01},
-                        {"id":"eval_exit","description":"Evaluate exit","action":"EVALUATE","if_conditions":[{"field":"${from.task:sleep1.success}","operation":"=","expected":true}],"then":{"exit":"exiting from test because of ERROR 0012545"},"else":{"continue":""}},
-                        {"id":"sleep2","description":"Should not run","action":"SLEEP","seconds":0.01}
-                ]
-        }`)
+                  "description": "evaluate exit action",
+                  "id": "evaluate.exit.action",
+                  "name": "evaluate.exit.action",
+                  "tasks": [
+                    {
+                      "action": "SLEEP",
+                      "description": "Initial sleep",
+                      "id": "sleep1",
+                      "name": "sleep1",
+                      "seconds": 0.01
+                    },
+                    {
+                      "action": "EVALUATE",
+                      "description": "Evaluate exit",
+                      "else": {
+                        "continue": ""
+                      },
+                      "id": "eval_exit",
+                      "if_conditions": [
+                        {
+                          "expected": true,
+                          "field": "${from.task:sleep1.success}",
+                          "operation": "="
+                        }
+                      ],
+                      "name": "eval_exit",
+                      "then": {
+                        "exit": "exiting from test because of ERROR 0012545"
+                      }
+                    },
+                    {
+                      "action": "SLEEP",
+                      "description": "Should not run",
+                      "id": "sleep2",
+                      "name": "sleep2",
+                      "seconds": 0.01
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -221,7 +319,7 @@ func TestRunEvaluateExitStopsFlow(t *testing.T) {
 func TestRunExecutesOnErrorFlow(t *testing.T) {
 	dir := t.TempDir()
 	cleanupPath := filepath.Join(dir, "cleanup.json")
-	cleanupContent := []byte(`{"id":"cleanup.flow","description":"cleanup flow","tasks":[{"id":"cleanup","description":"run cleanup","action":"PRINT","entries":[{"message":"cleanup"}]}]}`)
+	cleanupContent := []byte(`{"description":"cleanup flow","id":"cleanup.flow","name":"cleanup.flow","tasks":[{"action":"PRINT","description":"run cleanup","entries":[{"message":"cleanup"}],"id":"cleanup","name":"cleanup"}]}`)
 	if err := os.WriteFile(cleanupPath, cleanupContent, 0o600); err != nil {
 		t.Fatalf("writing cleanup flow: %v", err)
 	}
@@ -229,15 +327,36 @@ func TestRunExecutesOnErrorFlow(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "onerror.cleanup",
-                "description": "ensure cleanup runs",
-                "imports": ["cleanup.json"],
-                "on_error_flow": "cleanup.flow",
-                "tasks": [
-                        {"id":"fail","description":"first task fails","action":"SHELL","command":["false"]},
-                        {"id":"skipped","description":"should be skipped","action":"PRINT","entries":[{"message":"skip"}]}
-                ]
-        }`)
+                  "description": "ensure cleanup runs",
+                  "id": "onerror.cleanup",
+                  "imports": [
+                    "cleanup.json"
+                  ],
+                  "name": "onerror.cleanup",
+                  "on_error_flow": "cleanup.flow",
+                  "tasks": [
+                    {
+                      "action": "SHELL",
+                      "command": [
+                        "false"
+                      ],
+                      "description": "first task fails",
+                      "id": "fail",
+                      "name": "fail"
+                    },
+                    {
+                      "action": "PRINT",
+                      "description": "should be skipped",
+                      "entries": [
+                        {
+                          "message": "skip"
+                        }
+                      ],
+                      "id": "skipped",
+                      "name": "skipped"
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -266,30 +385,44 @@ func TestRunVariablesTaskSupportsIntraTaskReferences(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "variables.intra.references",
-                "description": "variables with intra-task references",
-                "tasks": [
+                  "description": "variables with intra-task references",
+                  "id": "variables.intra.references",
+                  "name": "variables.intra.references",
+                  "tasks": [
+                    {
+                      "action": "VARIABLES",
+                      "description": "Declare namespace used in tests",
+                      "id": "vars.namespace",
+                      "name": "vars.namespace",
+                      "overwrite": true,
+                      "scope": "flow",
+                      "vars": [
                         {
-                                "id": "vars.namespace",
-                                "description": "Declare namespace used in tests",
-                                "action": "VARIABLES",
-                                "scope": "flow",
-                                "overwrite": true,
-                                "vars": [
-                                        {"name": "platform_name", "type": "string", "value": "tic-dev08"},
-                                        {"name": "k8_namespace", "type": "string", "value": "tic-${platform_name}"}
-                                ]
+                          "name": "platform_name",
+                          "type": "string",
+                          "value": "tic-dev08"
                         },
                         {
-                                "id": "print.namespace",
-                                "description": "Log namespace",
-                                "action": "PRINT",
-                                "entries": [
-                                        {"message": "Namespace", "value": "${k8_namespace}"}
-                                ]
+                          "name": "k8_namespace",
+                          "type": "string",
+                          "value": "tic-${platform_name}"
                         }
-                ]
-        }`)
+                      ]
+                    },
+                    {
+                      "action": "PRINT",
+                      "description": "Log namespace",
+                      "entries": [
+                        {
+                          "message": "Namespace",
+                          "value": "${k8_namespace}"
+                        }
+                      ],
+                      "id": "print.namespace",
+                      "name": "print.namespace"
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -317,59 +450,83 @@ func TestParallelActionExecutesSubtasks(t *testing.T) {
 	flowPath := filepath.Join(dir, "parallel_flow.json")
 
 	flowContent := []byte(`{
-                "id": "parallel.flow.test",
-                "description": "parallel action demo",
-                "tasks": [
+                  "description": "parallel action demo",
+                  "id": "parallel.flow.test",
+                  "name": "parallel.flow.test",
+                  "tasks": [
+                    {
+                      "action": "VARIABLES",
+                      "description": "Initialize variables",
+                      "id": "setup",
+                      "name": "setup",
+                      "overwrite": true,
+                      "scope": "flow",
+                      "vars": [
                         {
-                                "id": "setup",
-                                "description": "Initialize variables",
-                                "action": "VARIABLES",
-                                "scope": "flow",
-                                "overwrite": true,
-                                "vars": [
-                                        {"name": "initial_value", "type": "string", "value": "base"}
-                                ]
+                          "name": "initial_value",
+                          "type": "string",
+                          "value": "base"
+                        }
+                      ]
+                    },
+                    {
+                      "action": "PARALLEL",
+                      "description": "Execute subtasks concurrently",
+                      "fail_fast": false,
+                      "id": "parallel.work",
+                      "merge_order": [
+                        "parallel.a",
+                        "parallel.b"
+                      ],
+                      "merge_strategy": "last_write_wins",
+                      "name": "parallel.work",
+                      "tasks": [
+                        {
+                          "action": "VARIABLES",
+                          "description": "Set value from branch A",
+                          "id": "parallel.a",
+                          "name": "parallel.a",
+                          "overwrite": true,
+                          "scope": "flow",
+                          "vars": [
+                            {
+                              "name": "parallel_value",
+                              "type": "string",
+                              "value": "from_a"
+                            }
+                          ]
                         },
                         {
-                                "id": "parallel.work",
-                                "description": "Execute subtasks concurrently",
-                                "action": "PARALLEL",
-                                "fail_fast": false,
-                                "merge_strategy": "last_write_wins",
-                                "merge_order": ["parallel.a", "parallel.b"],
-                                "tasks": [
-                                        {
-                                                "id": "parallel.a",
-                                                "description": "Set value from branch A",
-                                                "action": "VARIABLES",
-                                                "scope": "flow",
-                                                "overwrite": true,
-                                                "vars": [
-                                                        {"name": "parallel_value", "type": "string", "value": "from_a"}
-                                                ]
-                                        },
-                                        {
-                                                "id": "parallel.b",
-                                                "description": "Set value from branch B",
-                                                "action": "VARIABLES",
-                                                "scope": "flow",
-                                                "overwrite": true,
-                                                "vars": [
-                                                        {"name": "parallel_value", "type": "string", "value": "from_b"}
-                                                ]
-                                        },
-                                        {
-                                                "id": "parallel.log",
-                                                "description": "Log the base value",
-                                                "action": "PRINT",
-                                                "entries": [
-                                                        {"message": "Base value", "value": "${initial_value}"}
-                                                ]
-                                        }
-                                ]
+                          "action": "VARIABLES",
+                          "description": "Set value from branch B",
+                          "id": "parallel.b",
+                          "name": "parallel.b",
+                          "overwrite": true,
+                          "scope": "flow",
+                          "vars": [
+                            {
+                              "name": "parallel_value",
+                              "type": "string",
+                              "value": "from_b"
+                            }
+                          ]
+                        },
+                        {
+                          "action": "PRINT",
+                          "description": "Log the base value",
+                          "entries": [
+                            {
+                              "message": "Base value",
+                              "value": "${initial_value}"
+                            }
+                          ],
+                          "id": "parallel.log",
+                          "name": "parallel.log"
                         }
-                ]
-        }`)
+                      ]
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -530,36 +687,46 @@ func TestRunSubtaskExecutesParallelChild(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "parallel.subtask.run",
-                "description": "run a parallel subtask directly",
-                "tasks": [
+                  "description": "run a parallel subtask directly",
+                  "id": "parallel.subtask.run",
+                  "name": "parallel.subtask.run",
+                  "tasks": [
+                    {
+                      "action": "PARALLEL",
+                      "description": "Execute subtasks concurrently",
+                      "id": "parallel.work",
+                      "name": "parallel.work",
+                      "tasks": [
                         {
-                                "id": "parallel.work",
-                                "description": "Execute subtasks concurrently",
-                                "action": "PARALLEL",
-                                "tasks": [
-                                        {
-                                                "id": "parallel.a",
-                                                "description": "Set value from subtask",
-                                                "action": "VARIABLES",
-                                                "scope": "flow",
-                                                "overwrite": true,
-                                                "vars": [
-                                                        {"name": "subtask_value", "type": "string", "value": "ok"}
-                                                ]
-                                        },
-                                        {
-                                                "id": "parallel.b",
-                                                "description": "Noop",
-                                                "action": "PRINT",
-                                                "entries": [
-                                                        {"message": "noop"}
-                                                ]
-                                        }
-                                ]
+                          "action": "VARIABLES",
+                          "description": "Set value from subtask",
+                          "id": "parallel.a",
+                          "name": "parallel.a",
+                          "overwrite": true,
+                          "scope": "flow",
+                          "vars": [
+                            {
+                              "name": "subtask_value",
+                              "type": "string",
+                              "value": "ok"
+                            }
+                          ]
+                        },
+                        {
+                          "action": "PRINT",
+                          "description": "Noop",
+                          "entries": [
+                            {
+                              "message": "noop"
+                            }
+                          ],
+                          "id": "parallel.b",
+                          "name": "parallel.b"
                         }
-                ]
-        }`)
+                      ]
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -598,44 +765,59 @@ func TestRunSubtaskExecutesFlowAndParentVariables(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "subtask.variables.run",
-                "description": "run subtask with flow and parent variables",
-                "tasks": [
+                  "description": "run subtask with flow and parent variables",
+                  "id": "subtask.variables.run",
+                  "name": "subtask.variables.run",
+                  "tasks": [
+                    {
+                      "action": "VARIABLES",
+                      "description": "Set base value",
+                      "id": "vars.flow",
+                      "name": "vars.flow",
+                      "scope": "flow",
+                      "vars": [
                         {
-                                "id": "vars.flow",
-                                "description": "Set base value",
-                                "action": "VARIABLES",
-                                "scope": "flow",
-                                "vars": [
-                                        {"name": "base", "type": "string", "value": "ok"}
-                                ]
+                          "name": "base",
+                          "type": "string",
+                          "value": "ok"
+                        }
+                      ]
+                    },
+                    {
+                      "action": "PARALLEL",
+                      "description": "Execute subtasks concurrently",
+                      "id": "parallel.work",
+                      "name": "parallel.work",
+                      "tasks": [
+                        {
+                          "action": "VARIABLES",
+                          "description": "Set inner value",
+                          "id": "vars.inner",
+                          "name": "vars.inner",
+                          "scope": "flow",
+                          "vars": [
+                            {
+                              "name": "inner",
+                              "type": "string",
+                              "value": "${base}"
+                            }
+                          ]
                         },
                         {
-                                "id": "parallel.work",
-                                "description": "Execute subtasks concurrently",
-                                "action": "PARALLEL",
-                                "tasks": [
-                                        {
-                                                "id": "vars.inner",
-                                                "description": "Set inner value",
-                                                "action": "VARIABLES",
-                                                "scope": "flow",
-                                                "vars": [
-                                                        {"name": "inner", "type": "string", "value": "${base}"}
-                                                ]
-                                        },
-                                        {
-                                                "id": "parallel.target",
-                                                "description": "Target subtask",
-                                                "action": "PRINT",
-                                                "entries": [
-                                                        {"message": "inner=${inner}"}
-                                                ]
-                                        }
-                                ]
+                          "action": "PRINT",
+                          "description": "Target subtask",
+                          "entries": [
+                            {
+                              "message": "inner=${inner}"
+                            }
+                          ],
+                          "id": "parallel.target",
+                          "name": "parallel.target"
                         }
-                ]
-        }`)
+                      ]
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -677,19 +859,19 @@ func TestRunFlowFlagExecutesSelectedFlowAndImports(t *testing.T) {
 	dir := t.TempDir()
 
 	nestedPath := filepath.Join(dir, "nested.json")
-	nestedContent := []byte(`{"id":"nested.flow","description":"nested","tasks":[{"id":"nested.task","description":"Nested sleep","action":"SLEEP","seconds":0.01}]}`)
+	nestedContent := []byte(`{"description":"nested","id":"nested.flow","name":"nested.flow","tasks":[{"action":"SLEEP","description":"Nested sleep","id":"nested.task","name":"nested.task","seconds":0.01}]}`)
 	if err := os.WriteFile(nestedPath, nestedContent, 0o600); err != nil {
 		t.Fatalf("writing nested flow: %v", err)
 	}
 
 	importedPath := filepath.Join(dir, "imported.json")
-	importedContent := []byte(`{"id":"imported.flow","description":"imported","imports":["nested.json"],"tasks":[{"id":"imported.task","description":"Imported sleep","action":"SLEEP","seconds":0.01}]}`)
+	importedContent := []byte(`{"description":"imported","id":"imported.flow","imports":["nested.json"],"name":"imported.flow","tasks":[{"action":"SLEEP","description":"Imported sleep","id":"imported.task","name":"imported.task","seconds":0.01}]}`)
 	if err := os.WriteFile(importedPath, importedContent, 0o600); err != nil {
 		t.Fatalf("writing imported flow: %v", err)
 	}
 
 	rootPath := filepath.Join(dir, "root.json")
-	rootContent := []byte(`{"id":"root.flow","description":"root","imports":["imported.json"],"tasks":[{"id":"local.task","description":"Local sleep","action":"SLEEP","seconds":0.01}]}`)
+	rootContent := []byte(`{"description":"root","id":"root.flow","imports":["imported.json"],"name":"root.flow","tasks":[{"action":"SLEEP","description":"Local sleep","id":"local.task","name":"local.task","seconds":0.01}]}`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("writing root flow: %v", err)
 	}
@@ -725,12 +907,19 @@ func TestRunExecutesRegisteredAction(t *testing.T) {
 	action.reset()
 
 	flowContent := []byte(`{
-                "id": "registered.action",
-                "description": "invoke registered action",
-                "tasks": [
-                        {"id":"custom","description":"Custom","action":"SLEEP","seconds":0.01}
-                ]
-        }`)
+                  "description": "invoke registered action",
+                  "id": "registered.action",
+                  "name": "registered.action",
+                  "tasks": [
+                    {
+                      "action": "SLEEP",
+                      "description": "Custom",
+                      "id": "custom",
+                      "name": "custom",
+                      "seconds": 0.01
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -759,12 +948,19 @@ func TestRunFailsForUnknownAction(t *testing.T) {
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "unknown.action",
-                "description": "unknown action",
-                "tasks": [
-                        {"id":"custom","description":"Custom","action":"SLEEP","seconds":0.01}
-                ]
-        }`)
+                  "description": "unknown action",
+                  "id": "unknown.action",
+                  "name": "unknown.action",
+                  "tasks": [
+                    {
+                      "action": "SLEEP",
+                      "description": "Custom",
+                      "id": "custom",
+                      "name": "custom",
+                      "seconds": 0.01
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}
@@ -793,51 +989,66 @@ func TestRunFlowExecutesPriorVariablesTasks(t *testing.T) {
 
 	varsPath := filepath.Join(dir, "vars.json")
 	varsContent := []byte(`{
-                "id": "vars.flow",
-                "description": "declare vars",
-                "tasks": [
+                  "description": "declare vars",
+                  "id": "vars.flow",
+                  "name": "vars.flow",
+                  "tasks": [
+                    {
+                      "action": "VARIABLES",
+                      "description": "Declare username",
+                      "id": "vars.declare",
+                      "name": "vars.declare",
+                      "overwrite": true,
+                      "scope": "flow",
+                      "vars": [
                         {
-                                "id": "vars.declare",
-                                "description": "Declare username",
-                                "action": "VARIABLES",
-                                "scope": "flow",
-                                "overwrite": true,
-                                "vars": [
-                                        {"name": "manager_user", "type": "string", "value": "admin"}
-                                ]
+                          "name": "manager_user",
+                          "type": "string",
+                          "value": "admin"
                         }
-                ]
-        }`)
+                      ]
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(varsPath, varsContent, 0o600); err != nil {
 		t.Fatalf("writing vars flow: %v", err)
 	}
 
 	targetPath := filepath.Join(dir, "target.json")
 	targetContent := []byte(`{
-                "id": "target.flow",
-                "description": "target flow",
-                "tasks": [
+                  "description": "target flow",
+                  "id": "target.flow",
+                  "name": "target.flow",
+                  "tasks": [
+                    {
+                      "action": "PRINT",
+                      "description": "Print manager user",
+                      "entries": [
                         {
-                                "id": "print.user",
-                                "description": "Print manager user",
-                                "action": "PRINT",
-                                "entries": [
-                                        {"message": "user", "value": "${manager_user}"}
-                                ]
+                          "message": "user",
+                          "value": "${manager_user}"
                         }
-                ]
-        }`)
+                      ],
+                      "id": "print.user",
+                      "name": "print.user"
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(targetPath, targetContent, 0o600); err != nil {
 		t.Fatalf("writing target flow: %v", err)
 	}
 
 	rootPath := filepath.Join(dir, "root.json")
 	rootContent := []byte(`{
-                "id": "root.flow",
-                "description": "root",
-                "imports": ["vars.json", "target.json"],
-                "tasks": []
-        }`)
+                  "description": "root",
+                  "id": "root.flow",
+                  "imports": [
+                    "vars.json",
+                    "target.json"
+                  ],
+                  "name": "root.flow",
+                  "tasks": []
+                }`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("writing root flow: %v", err)
 	}
@@ -942,25 +1153,41 @@ func TestRunCreatesSubflowTaskLogsInFlowDirectory(t *testing.T) {
 
 	subflowPath := filepath.Join(dir, "sub.json")
 	subflowContent := []byte(`{
-                "id": "sub.flow",
-                "description": "sub flow",
-                "tasks": [
-                        {"id":"sub.task","description":"Sub task","action":"SLEEP","seconds":0.01}
-                ]
-        }`)
+                  "description": "sub flow",
+                  "id": "sub.flow",
+                  "name": "sub.flow",
+                  "tasks": [
+                    {
+                      "action": "SLEEP",
+                      "description": "Sub task",
+                      "id": "sub.task",
+                      "name": "sub.task",
+                      "seconds": 0.01
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(subflowPath, subflowContent, 0o600); err != nil {
 		t.Fatalf("writing subflow: %v", err)
 	}
 
 	rootPath := filepath.Join(dir, "root.json")
 	rootContent := []byte(`{
-                "id": "root.flow",
-                "description": "root flow",
-                "imports": ["sub.json"],
-                "tasks": [
-                        {"id":"root.task","description":"Root task","action":"SLEEP","seconds":0.01}
-                ]
-        }`)
+                  "description": "root flow",
+                  "id": "root.flow",
+                  "imports": [
+                    "sub.json"
+                  ],
+                  "name": "root.flow",
+                  "tasks": [
+                    {
+                      "action": "SLEEP",
+                      "description": "Root task",
+                      "id": "root.task",
+                      "name": "root.task",
+                      "seconds": 0.01
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(rootPath, rootContent, 0o600); err != nil {
 		t.Fatalf("writing root flow: %v", err)
 	}
@@ -1008,7 +1235,7 @@ func writeFlow(t *testing.T) string {
 	dir := t.TempDir()
 	flowPath := filepath.Join(dir, "flow.json")
 
-	flowContent := []byte(`{"id":"writeflow.test","description":"test","tasks":[{"id":"task1","description":"First sleep task","action":"SLEEP","seconds":0.01},{"id":"task2","description":"Second sleep task","action":"SLEEP","seconds":0.01}]}`)
+	flowContent := []byte(`{"description":"test","id":"writeflow.test","name":"writeflow.test","tasks":[{"action":"SLEEP","description":"First sleep task","id":"task1","name":"task1","seconds":0.01},{"action":"SLEEP","description":"Second sleep task","id":"task2","name":"task2","seconds":0.01}]}`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}

@@ -1,9 +1,11 @@
 {
   "id": "vars_flow_tests",
+  "name": "vars flow tests",
   "description": "Var tests json object",
   "tasks": [
     {
       "id": "vars.test_json",
+      "name": "vars test json",
       "description": "Test json vars",
       "action": "VARIABLES",
       "scope": "flow",
@@ -42,6 +44,7 @@
     },
     {
       "id": "print.vars_test",
+      "name": "print vars test",
       "description": "Printing var from other task",
       "action": "PRINT",
       "entries": [

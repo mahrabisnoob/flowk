@@ -1,9 +1,11 @@
 {
   "id": "subflows.dog_api_metrics",
+  "name": "subflows dog api metrics",
   "description": "Derive actionable metrics from the Dog API payload and craft a concise insight summary.",
   "tasks": [
     {
       "id": "dog_metrics.compute_lists",
+      "name": "dog metrics compute lists",
       "description": "Calculate filtered lists and metadata derived from the latest Dog API response.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -45,6 +47,7 @@
     },
     {
       "id": "dog_metrics.evaluate_hypoallergenic",
+      "name": "dog metrics evaluate hypoallergenic",
       "description": "Confirm at least one hypoallergenic breed was discovered to keep downstream alerting satisfied.",
       "action": "EVALUATE",
       "if_conditions": [
@@ -63,6 +66,7 @@
     },
     {
       "id": "dog_metrics.compose_summary",
+      "name": "dog metrics compose summary",
       "description": "Create a short narrative summarizing the page analysis for reporting purposes.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -76,6 +80,7 @@
     },
     {
       "id": "dog_metrics.print_summary",
+      "name": "dog metrics print summary",
       "description": "Log the computed metrics and the summary string for observability dashboards.",
       "action": "PRINT",
       "entries": [

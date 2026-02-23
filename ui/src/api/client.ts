@@ -21,13 +21,16 @@ const parseJSON = async <T>(response: Response): Promise<T> => {
 
 type RawFlowResponse = {
   id: string;
+  name?: string;
   description: string;
   imports?: string[];
+  flowNames?: Record<string, string>;
   tasks: RawTaskResponse[];
 };
 
 type RawTaskResponse = {
   id: string;
+  name?: string;
   description?: string;
   action: string;
   flowId?: string;
@@ -41,9 +44,16 @@ type RawTaskResponse = {
   fields?: Record<string, unknown>;
 };
 
+export type FlowLayoutSnapshot = {
+  version: number;
+  viewport?: { x: number; y: number; zoom: number };
+  nodes: Record<string, { x: number; y: number }>;
+};
+
 const mapTask = (task: RawTaskResponse): TaskDefinition => {
   const base: TaskDefinition = {
     id: task.id,
+    name: task.name ?? task.id,
     description: task.description,
     action: task.action,
     flowId: task.flowId,
@@ -72,8 +82,10 @@ const mapTask = (task: RawTaskResponse): TaskDefinition => {
 
 const mapFlowResponse = (data: RawFlowResponse): FlowDefinition => ({
   id: data.id,
+  name: data.name ?? data.id,
   description: data.description,
   imports: data.imports ?? [],
+  flowNames: data.flowNames ?? undefined,
   tasks: data.tasks.map(mapTask),
 });
 
@@ -121,6 +133,91 @@ export const fetchActionsGuide = async (): Promise<ActionsGuide> => {
 
 export const createEventSource = (): EventSource => {
   return new EventSource(withBase('/api/run/events'));
+};
+
+export const fetchFlowLayout = async (
+  flowId: string,
+  sourceName?: string
+): Promise<FlowLayoutSnapshot | null> => {
+  const trimmed = flowId?.trim();
+  if (!trimmed) {
+    return null;
+  }
+  const params = new URLSearchParams({ flowId: trimmed });
+  if (sourceName?.trim()) {
+    params.set('sourceName', sourceName.trim());
+  }
+  const response = await fetch(withBase(`/api/ui/layout?${params.toString()}`));
+  if (response.status === 404) {
+    return null;
+  }
+  return parseJSON<FlowLayoutSnapshot>(response);
+};
+
+export const saveFlowLayout = async (
+  flowId: string,
+  sourceName: string | undefined,
+  snapshot: FlowLayoutSnapshot
+): Promise<void> => {
+  const trimmed = flowId?.trim();
+  if (!trimmed) {
+    return;
+  }
+  const payload = {
+    flowId: trimmed,
+    sourceName: sourceName?.trim() || undefined,
+    snapshot
+  };
+  const response = await fetch(withBase('/api/ui/layout'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!response.ok) {
+    const message = await response.text();
+    try {
+      const parsed = JSON.parse(message) as { error?: string };
+      if (parsed?.error) {
+        throw new Error(parsed.error);
+      }
+    } catch {
+      if (message.trim()) {
+        throw new Error(message);
+      }
+    }
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+};
+
+export const deleteFlowLayout = async (flowId: string, sourceName?: string): Promise<void> => {
+  const trimmed = flowId?.trim();
+  if (!trimmed) {
+    return;
+  }
+  const params = new URLSearchParams({ flowId: trimmed });
+  if (sourceName?.trim()) {
+    params.set('sourceName', sourceName.trim());
+  }
+  const response = await fetch(withBase(`/api/ui/layout?${params.toString()}`), {
+    method: 'DELETE'
+  });
+  if (response.status === 404) {
+    return;
+  }
+  if (!response.ok) {
+    const message = await response.text();
+    try {
+      const parsed = JSON.parse(message) as { error?: string };
+      if (parsed?.error) {
+        throw new Error(parsed.error);
+      }
+    } catch {
+      if (message.trim()) {
+        throw new Error(message);
+      }
+    }
+    throw new Error(`Request failed with status ${response.status}`);
+  }
 };
 
 type RunRequestOptions = {

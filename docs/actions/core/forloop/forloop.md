@@ -30,12 +30,14 @@ If `require_break` is `true` and the loop exits without a `break` control, the a
 ```json
 {
   "id": "loop.players",
+  "name": "loop.players",
   "action": "FOR",
   "variable": "player",
   "values": ["Ada", "Linus"],
   "tasks": [
     {
       "id": "print.player",
+      "name": "print.player",
       "action": "PRINT",
       "entries": [
         { "message": "Player", "value": "${player}" }

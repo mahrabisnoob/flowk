@@ -20,6 +20,10 @@
     "stopFlow": "Stop flow",
     "stoppingFlow": "Stopping...",
     "resumeFromTask": "Resume from task",
+    "saveLayout": "Save layout",
+    "resetLayout": "Reset layout",
+    "autoSaveLayoutOn": "Auto-save layout: on",
+    "autoSaveLayoutOff": "Auto-save layout: off",
     "addTask": "Add task",
     "open": "Open",
     "delete": "Close"
@@ -36,7 +40,8 @@
     "runError": "An error occurred while starting the execution.",
     "resumeError": "An error occurred while resuming the execution.",
     "stopError": "An error occurred while stopping the execution.",
-    "stopAtError": "An error occurred while setting the stop task."
+    "stopAtError": "An error occurred while setting the stop task.",
+    "resetLayoutConfirm": "Reset the saved layout for this flow?"
   },
   "flowList": {
     "title": "Available flows",
@@ -110,6 +115,7 @@
     "logsEmpty": "No logs recorded for this task.",
     "fields": {
       "id": "Identifier",
+      "name": "Name",
       "description": "Description",
       "action": "Action",
       "operation": "Operation",

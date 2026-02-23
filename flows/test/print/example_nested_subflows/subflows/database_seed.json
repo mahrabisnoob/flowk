@@ -1,16 +1,21 @@
 {
   "id": "database_seed",
+  "name": "database seed",
   "description": "Database seed subflow. This subflow simulates seeding a database with initial data.",
   "tasks": [
     {
       "id": "db_seed_print_message",
+      "name": "db seed print message",
       "action": "PRINT",
-      "entries": [{
-        "message": "SUBFLOW 'database_seed': Seeding users table with 100 records..."
-      }]
+      "entries": [
+        {
+          "message": "SUBFLOW 'database_seed': Seeding users table with 100 records..."
+        }
+      ]
     },
     {
       "id": "db_seed_set_variable",
+      "name": "db seed set variable",
       "action": "VARIABLES",
       "scope": "flow",
       "overwrite": true,

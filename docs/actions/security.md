@@ -29,6 +29,7 @@ Specific properties depend on the `operation`.
 ```json
 {
   "id": "encrypt_backup",
+  "name": "encrypt_backup",
   "action": "PGP",
   "steps": [
     {

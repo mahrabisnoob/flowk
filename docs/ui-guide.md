@@ -24,12 +24,16 @@ The header controls let you start, stop, and resume runs. Some buttons act on th
 - **Stop flow (Stop)**: requests the current run to stop; the flow finishes after the current task completes.
 - **Run task (PlayCircle)**: runs only the selected task (or a subtask if you select one inside a block).
 - **Resume from task (FastForward)**: resumes the flow starting at the selected task after a prior run has finished; available only when the task has completed (success or failure) and is not a subtask.
+- **Save layout (Save)**: saves the current canvas layout manually.
+- **Reset layout (Rotate)**: deletes the saved layout for the current flow and resets the canvas.
+- **Auto-save layout (Toggle)**: enables/disables automatic layout saving while you drag nodes or pan/zoom.
 
 ### 2. Flow Visualization
 The main view renders your flow as an interactive graph.
 - **Nodes**: Represent tasks.
 - **Edges**: Show the dependency and execution order.
-- **Subflows**: Nested flows are encapsulated in expandable groups.
+- **Subflows**: Nested flows are encapsulated in draggable groups.
+- **FOR/PARALLEL**: Group containers wrap their child tasks and can be dragged as a unit.
 - **Status Indicators**: Tasks change color real-time based on status (Pending: Grey, Running: Blue, Success: Green, Error: Red).
 
 ![Flow Visualization](../brand/screenshot1.jpg)
@@ -51,3 +55,5 @@ View the current state of all variables in the flow context. This is crucial for
 ## Tips & Tricks
 - **Zoom/Pan**: Use your mouse wheel or trackpad to zoom in/out of large flows.
 - **Auto-Focus**: The UI will automatically center on the currently running task if you enable "Follow Execution".
+- **Layout Persistence**: Node positions and viewport are saved under FlowK's config directory (the folder containing `config.yaml`, in `ui/layouts`). If you run with `-config`, layouts are stored next to that config file. Delete those files to reset.
+- **Layout Controls**: Use the header controls to save the layout manually, toggle auto-save, or reset the saved layout for the current flow.

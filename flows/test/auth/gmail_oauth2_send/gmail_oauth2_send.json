@@ -1,5 +1,6 @@
 {
   "id": "gmail_oauth_send_demo",
+  "name": "gmail oauth send demo",
   "description": "Generate OAuth2 authorize URL, exchange code, and send an email with Gmail API",
   "imports": [
     "../flow_credentials/gmail_secrets_sf.json",

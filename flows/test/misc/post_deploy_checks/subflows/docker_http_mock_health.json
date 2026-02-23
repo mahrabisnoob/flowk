@@ -1,19 +1,21 @@
 {
   "id": "docker_http_mock_health",
+  "name": "docker http mock health",
   "description": "Run a local HTTP echo server that returns a simple health payload.",
   "tasks": [
     {
       "id": "docker.pull.http_echo.health",
+      "name": "docker pull http echo health",
       "action": "DOCKER",
       "operation": "IMAGE_PULL",
       "image": "hashicorp/http-echo:0.2.3"
     },
     {
       "id": "docker.run.health_mock",
+      "name": "flowk-health-mock",
       "action": "DOCKER",
       "operation": "CONTAINER_RUN",
       "image": "hashicorp/http-echo:0.2.3",
-      "name": "flowk-health-mock",
       "detach": true,
       "remove_existing": true,
       "ports": [
@@ -28,6 +30,7 @@
     },
     {
       "id": "sleep.health_mock",
+      "name": "sleep health mock",
       "description": "Wait for the mock server to accept requests.",
       "action": "SLEEP",
       "seconds": 1

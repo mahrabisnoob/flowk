@@ -313,12 +313,19 @@ func TestRunFlowWithServeUIKeepsServerRunningUntilContextCancelled(t *testing.T)
 	flowPath := filepath.Join(dir, "flow.json")
 
 	flowContent := []byte(`{
-                "id": "ui.test.flow",
-                "description": "UI test flow",
-                "tasks": [
-                        {"id":"sleep","description":"short pause","action":"SLEEP","seconds":0.01}
-                ]
-        }`)
+                  "description": "UI test flow",
+                  "id": "ui.test.flow",
+                  "name": "ui.test.flow",
+                  "tasks": [
+                    {
+                      "action": "SLEEP",
+                      "description": "short pause",
+                      "id": "sleep",
+                      "name": "sleep",
+                      "seconds": 0.01
+                    }
+                  ]
+                }`)
 	if err := os.WriteFile(flowPath, flowContent, 0o600); err != nil {
 		t.Fatalf("writing flow: %v", err)
 	}

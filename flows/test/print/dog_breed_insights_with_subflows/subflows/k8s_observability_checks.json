@@ -1,9 +1,11 @@
 {
   "id": "subflows.k8s_observability_checks",
+  "name": "subflows k8s observability checks",
   "description": "Capture Kubernetes deployment logs to pair infrastructure context with the Dog API insight report.",
   "tasks": [
     {
       "id": "observability.print_prelude",
+      "name": "observability print prelude",
       "description": "Signal the start of the Kubernetes log snapshot sequence.",
       "action": "PRINT",
       "entries": [
@@ -19,6 +21,7 @@
     },
     {
       "id": "observability.mock_logs",
+      "name": "observability mock logs",
       "description": "Provide a deterministic log sample for environments without Kubernetes.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -41,6 +44,7 @@
     },
     {
       "id": "observability.verify_logs",
+      "name": "observability verify logs",
       "description": "Verify the log retrieval succeeded before persisting the snippet for later reporting.",
       "action": "EVALUATE",
       "if_conditions": [
@@ -59,6 +63,7 @@
     },
     {
       "id": "observability.print_preview",
+      "name": "observability print preview",
       "description": "Expose a preview of the captured Kubernetes logs.",
       "action": "PRINT",
       "entries": [

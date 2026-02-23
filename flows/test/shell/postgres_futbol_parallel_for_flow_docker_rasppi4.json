@@ -1,9 +1,11 @@
 {
   "id": "postgres_futbol_parallel_for_flow_docker_rasppi4",
+  "name": "postgres futbol parallel for flow docker rasppi4",
   "description": "Postgres flow with FOR, PARALLEL, and EVALUATE using DOCKER actions (Docker included)",
   "tasks": [
     {
       "id": "vars.postgres_futbol",
+      "name": "vars postgres futbol",
       "description": "Declare Postgres platform configuration and expected values",
       "action": "VARIABLES",
       "scope": "flow",
@@ -73,6 +75,7 @@
     },
     {
       "id": "docker.image.pull.postgres",
+      "name": "docker image pull postgres",
       "description": "Pull Postgres Docker image",
       "action": "DOCKER",
       "operation": "IMAGE_PULL",
@@ -80,13 +83,13 @@
     },
     {
       "id": "docker.container.run.postgres",
+      "name": "flowk-postgres",
       "description": "Run Postgres container",
       "action": "DOCKER",
       "operation": "CONTAINER_RUN",
       "detach": true,
       "remove_existing": true,
       "image": "${postgres_image}",
-      "name": "${postgres_container_name}",
       "env": [
         "POSTGRES_PASSWORD=${postgres_password}",
         "POSTGRES_USER=${postgres_user}",
@@ -98,12 +101,14 @@
     },
     {
       "id": "sleep.postgres.startup",
+      "name": "sleep postgres startup",
       "description": "Give Postgres time to boot",
       "action": "SLEEP",
       "seconds": 8
     },
     {
       "id": "docker.container.exec.postgres.ready",
+      "name": "docker container exec postgres ready",
       "description": "Check Postgres is accepting connections",
       "action": "DOCKER",
       "operation": "CONTAINER_EXEC",
@@ -117,6 +122,7 @@
     },
     {
       "id": "check_connection_postgres",
+      "name": "check connection postgres",
       "description": "Check connection to Postgres",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -124,6 +130,7 @@
     },
     {
       "id": "create_players_table_postgres",
+      "name": "create players table postgres",
       "description": "Create football players table",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -133,6 +140,7 @@
     },
     {
       "id": "truncate_players_table_postgres",
+      "name": "truncate players table postgres",
       "description": "Ensure the table starts empty",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -142,6 +150,7 @@
     },
     {
       "id": "for.insert_players",
+      "name": "for insert players",
       "description": "Insert football players with FOR",
       "action": "FOR",
       "variable": "player_row",
@@ -154,6 +163,7 @@
       "tasks": [
         {
           "id": "insert_player_postgres",
+          "name": "insert player postgres",
           "description": "Insert one football player",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -165,6 +175,7 @@
     },
     {
       "id": "parallel.futbol_queries",
+      "name": "parallel futbol queries",
       "description": "Run football queries in parallel",
       "action": "PARALLEL",
       "fail_fast": false,
@@ -177,6 +188,7 @@
       "tasks": [
         {
           "id": "query.player_count",
+          "name": "query player count",
           "description": "Count total players",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -186,6 +198,7 @@
         },
         {
           "id": "query.team_summary",
+          "name": "query team summary",
           "description": "Players grouped by team",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -195,6 +208,7 @@
         },
         {
           "id": "query.goal_sum",
+          "name": "query goal sum",
           "description": "Sum of all goals",
           "platform": "${platform_postgres_local}",
           "action": "DB_POSTGRES_OPERATION",
@@ -206,6 +220,7 @@
     },
     {
       "id": "evaluate.futbol_expected",
+      "name": "evaluate futbol expected",
       "description": "Check that queries return the expected football data",
       "action": "EVALUATE",
       "if_conditions": [
@@ -229,6 +244,7 @@
     },
     {
       "id": "truncate_all_tables_postgres",
+      "name": "truncate all tables postgres",
       "description": "Truncate all tables in flowk_db",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -237,6 +253,7 @@
     },
     {
       "id": "docker.container.stop.postgres",
+      "name": "docker container stop postgres",
       "description": "Stop Postgres container",
       "action": "DOCKER",
       "operation": "CONTAINER_STOP",
@@ -244,6 +261,7 @@
     },
     {
       "id": "docker.container.remove.postgres",
+      "name": "docker container remove postgres",
       "description": "Remove Postgres container",
       "action": "DOCKER",
       "operation": "CONTAINER_REMOVE",
@@ -251,6 +269,7 @@
     },
     {
       "id": "docker.image.remove.postgres",
+      "name": "docker image remove postgres",
       "description": "Remove Postgres image",
       "action": "DOCKER",
       "operation": "IMAGE_REMOVE",

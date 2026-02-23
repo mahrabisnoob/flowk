@@ -1,5 +1,6 @@
 {
   "id": "flow_k8_helm_mysql_cicd",
+  "name": "flow k8 helm mysql cicd",
   "description": "CI/CD-style flow that installs MySQL with Helm, scales an app deployment down/up, waits for readiness, and runs MySQL queries over a Kubernetes port-forward.",
   "imports": [
     "./subflows/k8_cicd_vars.json",

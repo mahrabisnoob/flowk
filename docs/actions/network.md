@@ -21,6 +21,7 @@ Performs an HTTP or HTTPS request.
 ```json
 {
   "id": "get_user_data",
+  "name": "get_user_data",
   "action": "HTTP_REQUEST",
   "protocol": "HTTPS",
   "method": "GET",
@@ -61,6 +62,7 @@ Executes commands or scripts on a remote server via SSH.
 ```json
 {
   "id": "uptime_check",
+  "name": "uptime_check",
   "action": "SSH",
   "connection": {
     "address": "192.168.1.10:22",
@@ -98,6 +100,7 @@ Can be one of:
 ```json
 {
   "id": "smtp_check",
+  "name": "smtp_check",
   "action": "TELNET",
   "host": "smtp.example.com",
   "port": 25,

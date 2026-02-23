@@ -1,5 +1,6 @@
 {
   "id": "ssh_command_demo",
+  "name": "ssh command demo",
   "description": "Demonstrates running remote commands over SSH",
   "imports": [
     "./subflows/docker_ssh_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "ssh.command.basic",
+      "name": "ssh command basic",
       "description": "Check system information over SSH",
       "action": "SSH",
       "connection": {
@@ -23,6 +25,7 @@
       "steps": [
         {
           "id": "ssh.uname",
+          "name": "ssh uname",
           "operation": "RUN_COMMAND_SMART_OUTPUT",
           "commands": [
             "uname -a"
@@ -30,12 +33,15 @@
         },
         {
           "id": "ssh.disk_usage",
+          "name": "ssh disk usage",
           "operation": "RUN_COMMAND",
           "commands": [
             "df -h"
           ],
           "stdout": "capture",
-          "allowedExitCodes": [1]
+          "allowedExitCodes": [
+            1
+          ]
         }
       ]
     }

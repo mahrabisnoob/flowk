@@ -8,17 +8,18 @@ interface ParallelChildNodeData {
 
 function ParallelChildNode({ data }: NodeProps<ParallelChildNodeData>) {
   const { task } = data;
+  const displayName = task.name ?? task.id;
   const description =
     typeof task.description === 'string' && task.description.trim().length > 0
       ? task.description
-      : task.id;
+      : displayName;
   const operation = typeof task.operation === 'string' ? task.operation : undefined;
   const platform = typeof task.platform === 'string' ? task.platform : undefined;
   return (
     <div className="parallel-child-node">
       <div className="parallel-child-node__header">
         <span className="parallel-child-node__action">{task.action}</span>
-        <span className="parallel-child-node__id">{task.id}</span>
+        <span className="parallel-child-node__id">{displayName}</span>
       </div>
       <p className="parallel-child-node__description">{description}</p>
       <div className="parallel-child-node__meta">

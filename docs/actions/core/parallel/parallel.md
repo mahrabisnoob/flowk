@@ -23,12 +23,14 @@ The action returns `flow.ResultTypeJSON` with an object keyed by task id. Each e
 ```json
 {
   "id": "parallel.queries",
+  "name": "parallel.queries",
   "action": "PARALLEL",
   "fail_fast": false,
   "merge_strategy": "last_write_wins",
   "tasks": [
     {
       "id": "query.one",
+      "name": "query.one",
       "action": "HTTP_REQUEST",
       "protocol": "HTTPS",
       "method": "GET",
@@ -36,6 +38,7 @@ The action returns `flow.ResultTypeJSON` with an object keyed by task id. Each e
     },
     {
       "id": "query.two",
+      "name": "query.two",
       "action": "HTTP_REQUEST",
       "protocol": "HTTPS",
       "method": "GET",

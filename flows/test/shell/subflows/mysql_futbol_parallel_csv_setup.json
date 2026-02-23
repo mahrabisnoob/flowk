@@ -1,9 +1,11 @@
 {
   "id": "subflows.mysql_futbol_parallel_csv.setup",
+  "name": "subflows mysql futbol parallel csv setup",
   "description": "Setup MySQL container and football_players table for CSV load.",
   "tasks": [
     {
       "id": "vars.mysql_futbol_csv",
+      "name": "vars mysql futbol csv",
       "description": "Declare MySQL platform configuration and expected values",
       "action": "VARIABLES",
       "scope": "flow",
@@ -81,6 +83,7 @@
     },
     {
       "id": "docker.image.pull.mysql",
+      "name": "docker image pull mysql",
       "description": "Pull MySQL Docker image",
       "action": "DOCKER",
       "operation": "IMAGE_PULL",
@@ -88,13 +91,13 @@
     },
     {
       "id": "docker.container.run.mysql",
+      "name": "flowk-mysql-csv",
       "description": "Run MySQL container",
       "action": "DOCKER",
       "operation": "CONTAINER_RUN",
       "detach": true,
       "remove_existing": true,
       "image": "${mysql_image}",
-      "name": "${mysql_container_name}",
       "env": [
         "MYSQL_ROOT_PASSWORD=${mysql_root_password}",
         "MYSQL_DATABASE=${mysql_database}",
@@ -110,12 +113,14 @@
     },
     {
       "id": "sleep.mysql.startup",
+      "name": "sleep mysql startup",
       "description": "Give MySQL time to boot",
       "action": "SLEEP",
       "seconds": 8
     },
     {
       "id": "docker.container.exec.mysql.ping",
+      "name": "docker container exec mysql ping",
       "description": "Check MySQL is accepting connections",
       "action": "DOCKER",
       "operation": "CONTAINER_EXEC",
@@ -129,6 +134,7 @@
     },
     {
       "id": "check_connection_mysql",
+      "name": "check connection mysql",
       "description": "Check connection to MySQL",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -136,6 +142,7 @@
     },
     {
       "id": "create_players_table_mysql",
+      "name": "create players table mysql",
       "description": "Create football players table",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -145,6 +152,7 @@
     },
     {
       "id": "truncate_players_table_mysql",
+      "name": "truncate players table mysql",
       "description": "Ensure the table starts empty",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",

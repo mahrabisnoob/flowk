@@ -58,6 +58,7 @@ All operations return `flow.ResultTypeJSON` with:
 ```json
 {
   "id": "upgrade_api",
+  "name": "upgrade_api",
   "action": "HELM",
   "operation": "UPGRADE_INSTALL",
   "release_name": "api",

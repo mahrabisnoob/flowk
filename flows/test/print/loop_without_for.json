@@ -1,9 +1,11 @@
 {
   "id": "forloop_demo",
+  "name": "forloop demo",
   "description": "Demonstrates using an evaluate task to implement a basic loop that prints numbers",
   "tasks": [
     {
       "id": "vars.initialize_loop",
+      "name": "vars initialize loop",
       "description": "Initializes the loop counter and helpers",
       "action": "VARIABLES",
       "scope": "flow",
@@ -28,6 +30,7 @@
     },
     {
       "id": "print.start_message",
+      "name": "print start message",
       "description": "Announces the range that will be printed",
       "action": "PRINT",
       "entries": [
@@ -38,6 +41,7 @@
     },
     {
       "id": "print.loop_iteration",
+      "name": "print loop iteration",
       "description": "Prints the current loop counter value",
       "action": "PRINT",
       "entries": [
@@ -52,12 +56,14 @@
     },
     {
       "id": "sleep_1",
+      "name": "sleep 1",
       "description": "Sleeps for 5 seconds",
       "action": "SLEEP",
       "seconds": 5
     },
     {
       "id": "vars.increment_counter",
+      "name": "vars increment counter",
       "description": "Increments the loop counter by one",
       "action": "VARIABLES",
       "scope": "flow",
@@ -75,12 +81,14 @@
     },
     {
       "id": "sleep_2",
+      "name": "sleep 2",
       "description": "Sleeps for 10 seconds",
       "action": "SLEEP",
       "seconds": 10
     },
     {
       "id": "evaluate.continue_loop",
+      "name": "evaluate continue loop",
       "description": "Determines whether the loop should continue",
       "action": "EVALUATE",
       "if_conditions": [
@@ -99,6 +107,7 @@
     },
     {
       "id": "print.loop_complete",
+      "name": "print loop complete",
       "description": "Prints a completion message after the loop finishes",
       "action": "PRINT",
       "entries": [

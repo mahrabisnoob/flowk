@@ -1,5 +1,6 @@
 {
   "id": "dev_flow_with_list_tables",
+  "name": "dev flow with list tables",
   "description": "Test flow",
   "imports": [
     "./subflows/docker_cassandra_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "vars.cassandra_platforms",
+      "name": "vars cassandra platforms",
       "description": "Declare Cassandra platform configurations",
       "action": "VARIABLES",
       "scope": "flow",
@@ -65,6 +67,7 @@
     },
     {
       "id": "check_connection_cluster1",
+      "name": "check connection cluster1",
       "description": "Check connection for cluster 1",
       "platform": "${cluster1}",
       "action": "DB_CASSANDRA_OPERATION",
@@ -72,6 +75,7 @@
     },
     {
       "id": "check_connection_cluster2",
+      "name": "check connection cluster2",
       "description": "Check connection for cluster 2",
       "platform": "${cluster2}",
       "action": "DB_CASSANDRA_OPERATION",

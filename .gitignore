@@ -46,3 +46,4 @@ certs/pgp/*
 *.pem.key
 *.asc
 .gitleaks.toml
+.github/workflows/

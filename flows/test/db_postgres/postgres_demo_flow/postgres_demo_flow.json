@@ -1,5 +1,6 @@
 {
   "id": "postgres_demo_flow",
+  "name": "postgres demo flow",
   "description": "Sample flow for Postgres actions",
   "imports": [
     "./subflows/docker_postgres_local.json"
@@ -7,6 +8,7 @@
   "tasks": [
     {
       "id": "vars.postgres_platforms",
+      "name": "vars postgres platforms",
       "description": "Declare Postgres platform configurations",
       "action": "VARIABLES",
       "scope": "flow",
@@ -36,6 +38,7 @@
     },
     {
       "id": "check_connection_pg",
+      "name": "check connection pg",
       "description": "Check connection to Postgres",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -43,6 +46,7 @@
     },
     {
       "id": "create_demo_table_pg",
+      "name": "create demo table pg",
       "description": "Create demo table",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -52,6 +56,7 @@
     },
     {
       "id": "insert_demo_rows_pg",
+      "name": "insert demo rows pg",
       "description": "Insert sample rows",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -61,6 +66,7 @@
     },
     {
       "id": "list_tables_pg",
+      "name": "list tables pg",
       "description": "List all tables",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -69,6 +75,7 @@
     },
     {
       "id": "list_objects_pg",
+      "name": "list objects pg",
       "description": "List all objects",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -77,6 +84,7 @@
     },
     {
       "id": "select_demo_rows_pg",
+      "name": "select demo rows pg",
       "description": "Select demo rows",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -86,6 +94,7 @@
     },
     {
       "id": "truncate_demo_tables_pg",
+      "name": "truncate demo tables pg",
       "description": "Truncate all tables in flowk_db",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -94,6 +103,7 @@
     },
     {
       "id": "select_after_truncate_pg",
+      "name": "select after truncate pg",
       "description": "Select after truncate (should be empty)",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",
@@ -103,6 +113,7 @@
     },
     {
       "id": "drop_demo_table_pg",
+      "name": "drop demo table pg",
       "description": "Drop demo table",
       "platform": "${platform_postgres_local}",
       "action": "DB_POSTGRES_OPERATION",

@@ -1,9 +1,11 @@
 {
   "id": "subflows.demo_mysql_musicbrainz_docker",
+  "name": "subflows demo mysql musicbrainz docker",
   "description": "MySQL flow that persists MusicBrainz artist data using Docker, FOR, PARALLEL, and EVALUATE actions.",
   "tasks": [
     {
       "id": "vars.mysql_musicbrainz",
+      "name": "vars mysql musicbrainz",
       "description": "Declare MySQL platform configuration and expected values",
       "action": "VARIABLES",
       "scope": "flow",
@@ -76,6 +78,7 @@
     },
     {
       "id": "docker.image.pull.mysql",
+      "name": "docker image pull mysql",
       "description": "Pull MySQL Docker image",
       "action": "DOCKER",
       "operation": "IMAGE_PULL",
@@ -83,30 +86,36 @@
     },
     {
       "id": "docker.container.run.mysql",
+      "name": "flowk-mysql",
       "description": "Run MySQL container",
       "action": "DOCKER",
       "operation": "CONTAINER_RUN",
       "detach": true,
       "remove_existing": true,
       "image": "${mysql_image}",
-      "name": "${mysql_container_name}",
       "env": [
         "MYSQL_ROOT_PASSWORD=${mysql_root_password}",
         "MYSQL_DATABASE=${mysql_database}",
         "MYSQL_USER=${mysql_user}",
         "MYSQL_PASSWORD=${mysql_password}"
       ],
-      "ports": ["${mysql_port}:3306"],
-      "command": ["--default-authentication-plugin=mysql_native_password"]
+      "ports": [
+        "${mysql_port}:3306"
+      ],
+      "command": [
+        "--default-authentication-plugin=mysql_native_password"
+      ]
     },
     {
       "id": "sleep.mysql.startup",
+      "name": "sleep mysql startup",
       "description": "Give MySQL time to boot",
       "action": "SLEEP",
       "seconds": 8
     },
     {
       "id": "docker.container.exec.mysql.ping",
+      "name": "docker container exec mysql ping",
       "description": "Check MySQL is accepting connections",
       "action": "DOCKER",
       "operation": "CONTAINER_EXEC",
@@ -120,6 +129,7 @@
     },
     {
       "id": "check_connection_mysql",
+      "name": "check connection mysql",
       "description": "Check connection to MySQL",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -127,6 +137,7 @@
     },
     {
       "id": "create_artist_profile_table_mysql",
+      "name": "create artist profile table mysql",
       "description": "Create MusicBrainz artist profile table",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -136,6 +147,7 @@
     },
     {
       "id": "create_artist_tags_table_mysql",
+      "name": "create artist tags table mysql",
       "description": "Create MusicBrainz artist tags table",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -145,6 +157,7 @@
     },
     {
       "id": "truncate_artist_profile_mysql",
+      "name": "truncate artist profile mysql",
       "description": "Ensure the artist profile table starts empty",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -154,6 +167,7 @@
     },
     {
       "id": "truncate_artist_tags_mysql",
+      "name": "truncate artist tags mysql",
       "description": "Ensure the artist tags table starts empty",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -163,6 +177,7 @@
     },
     {
       "id": "insert_artist_profile_mysql",
+      "name": "insert artist profile mysql",
       "description": "Insert the MusicBrainz artist profile",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -172,6 +187,7 @@
     },
     {
       "id": "for.insert_artist_tags",
+      "name": "for insert artist tags",
       "description": "Insert MusicBrainz artist tags with FOR",
       "action": "FOR",
       "variable": "tag_row",
@@ -184,6 +200,7 @@
       "tasks": [
         {
           "id": "insert_artist_tag_mysql",
+          "name": "insert artist tag mysql",
           "description": "Insert one MusicBrainz artist tag",
           "platform": "${platform_mysql_local}",
           "action": "DB_MYSQL_OPERATION",
@@ -195,6 +212,7 @@
     },
     {
       "id": "parallel.musicbrainz_queries",
+      "name": "parallel musicbrainz queries",
       "description": "Run MusicBrainz queries in parallel",
       "action": "PARALLEL",
       "fail_fast": false,
@@ -207,6 +225,7 @@
       "tasks": [
         {
           "id": "query.profile_count",
+          "name": "query profile count",
           "description": "Count artist profile rows",
           "platform": "${platform_mysql_local}",
           "action": "DB_MYSQL_OPERATION",
@@ -216,6 +235,7 @@
         },
         {
           "id": "query.tag_count",
+          "name": "query tag count",
           "description": "Count tag rows",
           "platform": "${platform_mysql_local}",
           "action": "DB_MYSQL_OPERATION",
@@ -225,6 +245,7 @@
         },
         {
           "id": "query.country_summary",
+          "name": "query country summary",
           "description": "Summarize by country",
           "platform": "${platform_mysql_local}",
           "action": "DB_MYSQL_OPERATION",
@@ -236,6 +257,7 @@
     },
     {
       "id": "evaluate.musicbrainz_expected",
+      "name": "evaluate musicbrainz expected",
       "description": "Check that MusicBrainz queries return the expected data",
       "action": "EVALUATE",
       "if_conditions": [
@@ -264,6 +286,7 @@
     },
     {
       "id": "vars.mysql_summary",
+      "name": "vars mysql summary",
       "description": "Capture MySQL MusicBrainz query results for downstream reporting",
       "action": "VARIABLES",
       "scope": "flow",
@@ -287,6 +310,7 @@
     },
     {
       "id": "print.mysql_summary",
+      "name": "print mysql summary",
       "description": "Print the MySQL MusicBrainz summary",
       "action": "PRINT",
       "entries": [
@@ -306,6 +330,7 @@
     },
     {
       "id": "truncate_all_tables_mysql",
+      "name": "truncate all tables mysql",
       "description": "Truncate all tables in flowk_db",
       "platform": "${platform_mysql_local}",
       "action": "DB_MYSQL_OPERATION",
@@ -314,6 +339,7 @@
     },
     {
       "id": "docker.container.stop.mysql",
+      "name": "docker container stop mysql",
       "description": "Stop MySQL container",
       "action": "DOCKER",
       "operation": "CONTAINER_STOP",
@@ -321,6 +347,7 @@
     },
     {
       "id": "docker.container.remove.mysql",
+      "name": "docker container remove mysql",
       "description": "Remove MySQL container",
       "action": "DOCKER",
       "operation": "CONTAINER_REMOVE",

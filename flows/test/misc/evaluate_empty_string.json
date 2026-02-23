@@ -1,9 +1,11 @@
 {
   "id": "evaluate_empty_string",
+  "name": "evaluate empty string",
   "description": "Demonstrate EVALUATE comparisons against an empty string literal.",
   "tasks": [
     {
       "id": "vars.seed_empty",
+      "name": "vars seed empty",
       "description": "Define a sample string that is intentionally empty.",
       "action": "VARIABLES",
       "scope": "flow",
@@ -18,6 +20,7 @@
     },
     {
       "id": "eval.empty_string",
+      "name": "eval empty string",
       "description": "Verify the empty string comparison succeeds.",
       "action": "EVALUATE",
       "if_conditions": [

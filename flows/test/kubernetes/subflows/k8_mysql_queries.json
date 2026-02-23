@@ -1,9 +1,11 @@
 {
   "id": "subflows.k8_mysql_queries",
+  "name": "subflows k8 mysql queries",
   "description": "Port-forward MySQL, run sample queries, and close the tunnel.",
   "tasks": [
     {
       "id": "k8.port_forward_mysql",
+      "name": "k8 port forward mysql",
       "description": "Expose MySQL locally to run database queries.",
       "action": "KUBERNETES",
       "operation": "PORT_FORWARD",
@@ -15,6 +17,7 @@
     },
     {
       "id": "mysql.check_connection",
+      "name": "mysql check connection",
       "description": "Verify MySQL is reachable through the port-forward.",
       "action": "DB_MYSQL_OPERATION",
       "platform": "${platform_mysql_port_forward}",
@@ -22,6 +25,7 @@
     },
     {
       "id": "mysql.create_table",
+      "name": "mysql create table",
       "description": "Create a table to track CI/CD runs.",
       "action": "DB_MYSQL_OPERATION",
       "platform": "${platform_mysql_port_forward}",
@@ -31,6 +35,7 @@
     },
     {
       "id": "mysql.insert_run",
+      "name": "mysql insert run",
       "description": "Insert a sample CI/CD run row.",
       "action": "DB_MYSQL_OPERATION",
       "platform": "${platform_mysql_port_forward}",
@@ -40,6 +45,7 @@
     },
     {
       "id": "mysql.query_runs",
+      "name": "mysql query runs",
       "description": "Query CI/CD run history.",
       "action": "DB_MYSQL_OPERATION",
       "platform": "${platform_mysql_port_forward}",
@@ -49,6 +55,7 @@
     },
     {
       "id": "k8.stop_port_forward",
+      "name": "k8 stop port forward",
       "description": "Stop the MySQL port-forward tunnel.",
       "action": "KUBERNETES",
       "operation": "STOP_PORT_FORWARD",
