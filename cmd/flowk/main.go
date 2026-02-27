@@ -15,7 +15,9 @@ import (
 	"flowk/internal/app"
 	actionhelp "flowk/internal/cli/actionhelp"
 	"flowk/internal/config"
+	"flowk/internal/secrets"
 	uiserver "flowk/internal/server/ui"
+	"flowk/internal/shared/expansion"
 )
 
 const (
@@ -29,12 +31,14 @@ var (
 	date    = "unknown"
 )
 
-const flowkInfoLogo = `______ _               _   __
-|  ___| |             | | / /
-| |_  | | _____      _| |/ / 
-|  _| | |/ _ \ \ /\ / /    \ 
-| |   | | (_) \ V  V /| |\  \
-\_|   |_|\___/ \_/\_/ \_| \_/
+const flowkInfoLogo = `
+___________.__                 ____  __.
+\_   _____/|  |   ______  _  _|    |/ _|
+ |    __)  |  |  /  _ \ \/ \/ /      <  
+ |     \   |  |_(  <_> )     /|    |  \ 
+ \___  /   |____/\____/ \/\_/ |____|__ \
+     \/                               \/
+	 
 `
 
 type runArguments struct {
@@ -262,6 +266,20 @@ func parseRunArgs(args []string) (runArguments, error) {
 	cfg.uiAddress = fmt.Sprintf("%s:%d", configResult.Config.UI.Host, configResult.Config.UI.Port)
 	cfg.uiDir = configResult.Config.UI.Dir
 	cfg.configPath = configResult.Path
+
+	resolver, err := secrets.BuildResolver(secrets.Config{
+		Provider: configResult.Config.Secrets.Provider,
+		Vault: secrets.VaultConfig{
+			Address:  configResult.Config.Secrets.Vault.Address,
+			Token:    configResult.Config.Secrets.Vault.Token,
+			KVMount:  configResult.Config.Secrets.Vault.KVMount,
+			KVPrefix: configResult.Config.Secrets.Vault.KVPrefix,
+		},
+	})
+	if err != nil {
+		return runArguments{}, err
+	}
+	expansion.SetSecretResolver(resolver)
 
 	return cfg, nil
 }

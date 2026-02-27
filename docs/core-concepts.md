@@ -90,6 +90,15 @@ You can access results from previous tasks using `${from.task:TASK_ID}`.
 `from.task` placeholders are resolved during payload expansion for all actions, so you can use them anywhere a string value is accepted (headers, bodies, args, etc.).
 If you need to preserve non-string types or build complex values, capture the result first with a `VARIABLES` task and reference the variable instead.
 
+
+### Native Secret Placeholders
+When a native secret provider is configured (for example, Vault), task payload strings can also reference secrets using:
+
+- `${secret:vault:<path>#<field>}`
+
+These placeholders are resolved during payload expansion before each action executes. If no secret provider is configured, FlowK returns an explicit error instead of silently skipping resolution.
+
+
 ```json
 {
   "id": "get_user",

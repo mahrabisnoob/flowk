@@ -350,6 +350,44 @@ func TestActionsGuideEndpoint(t *testing.T) {
 	}
 }
 
+func TestOpenAPIEndpoint(t *testing.T) {
+	srv, err := NewServer(Config{
+		Address: "127.0.0.1:0",
+	})
+	if err != nil {
+		t.Fatalf("NewServer error: %v", err)
+	}
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest(http.MethodGet, "/api/openapi.json", nil)
+	if err != nil {
+		t.Fatalf("creating request: %v", err)
+	}
+
+	srv.Handle().ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("expected status 200, got %d (%s)", rec.Code, rec.Body.String())
+	}
+
+	var payload map[string]any
+	if err := json.Unmarshal(rec.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("decoding response: %v", err)
+	}
+
+	if payload["openapi"] != "3.0.3" {
+		t.Fatalf("unexpected openapi version: %v", payload["openapi"])
+	}
+
+	paths, ok := payload["paths"].(map[string]any)
+	if !ok {
+		t.Fatalf("expected paths object in response")
+	}
+
+	if _, ok := paths["/api/run/events"]; !ok {
+		t.Fatalf("expected /api/run/events path in contract")
+	}
+}
+
 func TestStoreFlowDefinitionMissingImport(t *testing.T) {
 	repo := t.TempDir()
 

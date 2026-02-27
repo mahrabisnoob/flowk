@@ -34,6 +34,7 @@ type RawTaskResponse = {
   description?: string;
   action: string;
   flowId?: string;
+  raw?: Record<string, unknown>;
   status?: string;
   success?: boolean;
   startedAt?: string;
@@ -57,6 +58,7 @@ const mapTask = (task: RawTaskResponse): TaskDefinition => {
     description: task.description,
     action: task.action,
     flowId: task.flowId,
+    raw: task.raw,
     status: task.status,
     success: task.success,
     startedAt: task.startedAt,

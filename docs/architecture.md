@@ -220,7 +220,7 @@ Implemented and visible security-relevant behaviors:
 
 Not present as core platform features:
 - No built-in authn/authz on UI endpoints.
-- No internal secret manager; repository guidance recommends env vars/secret managers operationally.
+- Native external secret resolution exists via provider-based integration (`none`/`vault`) and `${secret:...}` placeholders resolved at runtime; this is not an internal secret storage service.
 
 ## 11. Architecture Decision Records (ADR)
 
