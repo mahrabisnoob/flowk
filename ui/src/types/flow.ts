@@ -4,6 +4,7 @@ export interface TaskDefinition extends Record<string, unknown> {
   description?: string;
   action: string;
   flowId?: string;
+  raw?: Record<string, unknown>;
   operation?: string;
   status?: string;
   startedAt?: string;

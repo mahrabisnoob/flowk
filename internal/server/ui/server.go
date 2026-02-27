@@ -95,6 +95,7 @@ func (s *Server) registerRoutes() {
 	s.engine.GET("/api/flow/notes", s.handleFlowNotes)
 	s.engine.GET("/api/schema", s.handleSchema)
 	s.engine.GET("/api/actions/guide", s.handleActionsGuide)
+	s.engine.GET("/api/openapi.json", s.handleOpenAPI)
 	s.engine.GET("/api/run/events", s.handleEvents)
 	s.engine.POST("/api/flow", s.handleImportFlow)
 	s.engine.POST("/api/run", s.handleRun)
@@ -337,6 +338,10 @@ func (s *Server) handleActionsGuide(c *gin.Context) {
 		"actions":     guide.Actions,
 		"markdown":    content,
 	})
+}
+
+func (s *Server) handleOpenAPI(c *gin.Context) {
+	c.Data(http.StatusOK, "application/json; charset=utf-8", OpenAPISpecJSON)
 }
 
 func (s *Server) handleEvents(c *gin.Context) {
@@ -1035,12 +1040,12 @@ func ensureWithinRoot(root, target string) error {
 }
 
 type FlowResponse struct {
-	ID          string        `json:"id"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	Imports     []string      `json:"imports,omitempty"`
+	ID          string            `json:"id"`
+	Name        string            `json:"name"`
+	Description string            `json:"description"`
+	Imports     []string          `json:"imports,omitempty"`
 	FlowNames   map[string]string `json:"flowNames,omitempty"`
-	Tasks       []TaskSummary `json:"tasks"`
+	Tasks       []TaskSummary     `json:"tasks"`
 }
 
 type TaskSummary struct {
@@ -1056,6 +1061,7 @@ type TaskSummary struct {
 	DurationSeconds float64         `json:"durationSeconds"`
 	ResultType      flow.ResultType `json:"resultType"`
 	Result          any             `json:"result,omitempty"`
+	Raw             map[string]any  `json:"raw,omitempty"`
 	Fields          map[string]any  `json:"fields,omitempty"`
 }
 
@@ -1115,7 +1121,12 @@ func buildTaskSummary(task flow.Task) TaskSummary {
 		summary.Result = task.Result
 	}
 
-	fields := extractTaskFields(task.Payload)
+	raw := extractTaskPayload(task.Payload)
+	if len(raw) > 0 {
+		summary.Raw = raw
+	}
+
+	fields := extractTaskFields(raw)
 	if len(fields) > 0 {
 		summary.Fields = fields
 	}
@@ -1123,7 +1134,7 @@ func buildTaskSummary(task flow.Task) TaskSummary {
 	return summary
 }
 
-func extractTaskFields(payload json.RawMessage) map[string]any {
+func extractTaskPayload(payload json.RawMessage) map[string]any {
 	if len(payload) == 0 {
 		return nil
 	}
@@ -1133,9 +1144,22 @@ func extractTaskFields(payload json.RawMessage) map[string]any {
 		return nil
 	}
 
-	delete(data, "id")
-	delete(data, "description")
-	delete(data, "action")
-
 	return data
+}
+
+func extractTaskFields(raw map[string]any) map[string]any {
+	if len(raw) == 0 {
+		return nil
+	}
+
+	fields := make(map[string]any, len(raw))
+	for key, value := range raw {
+		fields[key] = value
+	}
+
+	delete(fields, "id")
+	delete(fields, "description")
+	delete(fields, "action")
+
+	return fields
 }

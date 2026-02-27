@@ -65,13 +65,33 @@ FlowK looks for a configuration file in the following order:
 ui:
   host: "0.0.0.0"
   port: 8080
-  cors_allowed_origins: ["*"]
-  static_dir: "./ui/dist" # Path to built UI assets
+  dir: "ui/dist" # Path to built UI assets
 
-logging:
-  level: "info"
-  format: "text" # or "json"
+secrets:
+  provider: "vault" # "none" or "vault"
+  vault:
+    address: "https://vault.example.local"
+    token: "s.xxxxx" # Recommended: inject from environment or external secret manager
+    kv_mount: "kv"   # Optional, defaults to kv
+    kv_prefix: ""    # Optional path prefix
 ```
+
+### Native Vault placeholders
+
+When `secrets.provider` is `vault`, FlowK can resolve placeholders in task payloads:
+
+- `${secret:vault:<path>#<field>}`
+
+Example:
+
+- `${secret:vault:apps/demo#api_token}`
+
+The placeholder resolves at runtime before action execution.
+
+Notes:
+- `secrets.provider` defaults to `none` (backward compatible mode).
+- If `secrets.provider: vault`, then `secrets.vault.address` and `secrets.vault.token` are required.
+- `secrets.vault.kv_mount` and `secrets.vault.kv_prefix` are optional and help map logical paths to your KV v2 mount.
 
 ## Next Steps
 

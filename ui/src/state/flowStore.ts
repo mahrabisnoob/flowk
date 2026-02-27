@@ -107,6 +107,7 @@ const runtimeTaskKeys = new Set([
   'resultType',
   'logs',
   'flowId',
+  'raw',
   'fields',
   'children'
 ]);
